@@ -1,0 +1,58 @@
+/* JTBC 커스텀 로그인 테마
+ * 기본 keycloak 테마를 상속하고 브랜딩만 덮어씀
+ * 레이아웃/구조는 부모 테마 CSS 그대로 사용
+ */
+
+/* ── 배경색 ─────────────────────────────────────────────── */
+body {
+  background-color: #1a1a2e;
+  background-image: none;
+}
+
+/* ── 로그인 카드 ─────────────────────────────────────────── */
+.login-pf-page .card-pf {
+  border-top: 4px solid #e8002d;
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* ── 로그인 버튼 ─────────────────────────────────────────── */
+#kc-login {
+  background-color: #e8002d;
+  border-color: #e8002d;
+}
+
+#kc-login:hover {
+  background-color: #c0001f;
+  border-color: #c0001f;
+}
+
+/* ── 헤더 영역 ───────────────────────────────────────────── */
+#kc-header-wrapper {
+  background-color: #e8002d;
+  padding: 20px;
+  text-align: center;
+}
+
+#kc-header-wrapper span.kc-auth-header-description,
+#kc-header-wrapper .kc-logo-text,
+#kc-header-wrapper span {
+  color: white !important;
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  letter-spacing: 4px !important;
+  font-family: 'Arial', sans-serif !important;
+  text-shadow: none !important;
+}
+
+/* ── 언어 드롭다운 수정 ──────────────────────────────────── */
+/* PatternFly 드롭다운: 기본 숨김 상태 강제 */
+#kc-locale .pf-c-dropdown__menu {
+  display: none;
+}
+
+/* pf-m-expanded 클래스가 붙을 때만 표시 (JS가 토글) */
+#kc-locale.pf-m-expanded .pf-c-dropdown__menu,
+#kc-locale-dropdown.pf-m-expanded .pf-c-dropdown__menu {
+  display: block;
+}

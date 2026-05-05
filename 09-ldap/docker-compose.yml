@@ -1,0 +1,48 @@
+services:
+
+  # ── OpenLDAP: Active Directory 대체 실습용 ─────────────────
+  openldap:
+    image: osixia/openldap:1.5.0
+    container_name: ldap-server
+
+    environment:
+      # LDAP 도메인: dc=jtbc,dc=co,dc=kr
+      # Distinguished Name(DN) 형식으로 변환됨
+      LDAP_ORGANISATION: "JTBC"
+      LDAP_DOMAIN: "jtbc.co.kr"
+
+      # LDAP 관리자 계정
+      # Bind DN: cn=admin,dc=jtbc,dc=co,dc=kr
+      LDAP_ADMIN_PASSWORD: "admin_password"
+
+      # TLS 비활성화 (실습 편의상)
+      LDAP_TLS: "false"
+
+    ports:
+      - "389:389"   # LDAP (평문)
+      # - "636:636" # LDAPS (TLS) - 운영에서는 이것만 사용
+
+    networks:
+      - ldap-net
+
+  # ── phpLDAPadmin: LDAP 관리 UI ─────────────────────────────
+  phpldapadmin:
+    image: osixia/phpldapadmin:0.9.0
+    container_name: ldap-admin-ui
+
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS: openldap
+      PHPLDAPADMIN_HTTPS: "false"
+
+    ports:
+      - "8090:80"
+
+    networks:
+      - ldap-net
+
+    depends_on:
+      - openldap
+
+networks:
+  ldap-net:
+    driver: bridge

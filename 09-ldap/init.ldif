@@ -1,0 +1,61 @@
+# JTBC LDAP 조직 구조 초기 데이터
+# LDIF (LDAP Data Interchange Format) - LDAP의 CSV 같은 것
+
+# ── 조직 단위(OU) 생성 ─────────────────────────────────────
+# OU = 폴더 개념. 사람과 그룹을 담는 컨테이너
+
+dn: ou=people,dc=jtbc,dc=co,dc=kr
+objectClass: organizationalUnit
+ou: people
+
+dn: ou=groups,dc=jtbc,dc=co,dc=kr
+objectClass: organizationalUnit
+ou: groups
+
+# ── 사용자 계정 생성 ───────────────────────────────────────
+# AD의 sAMAccountName = LDAP의 uid
+# AD의 UserPrincipalName = LDAP의 mail
+
+dn: uid=lee.jiyeon,ou=people,dc=jtbc,dc=co,dc=kr
+objectClass: inetOrgPerson
+objectClass: posixAccount
+uid: lee.jiyeon
+cn: 이지연
+sn: 이
+givenName: 지연
+mail: lee.jiyeon@jtbc.co.kr
+userPassword: LdapTest1234!
+uidNumber: 1001
+gidNumber: 1001
+homeDirectory: /home/lee.jiyeon
+# 부서 정보 (AD의 department 속성과 동일)
+departmentNumber: 개발팀
+title: 선임 개발자
+
+dn: uid=choi.junho,ou=people,dc=jtbc,dc=co,dc=kr
+objectClass: inetOrgPerson
+objectClass: posixAccount
+uid: choi.junho
+cn: 최준호
+sn: 최
+givenName: 준호
+mail: choi.junho@jtbc.co.kr
+userPassword: LdapTest1234!
+uidNumber: 1002
+gidNumber: 1002
+homeDirectory: /home/choi.junho
+departmentNumber: 경영팀
+title: 팀장
+
+# ── 그룹 생성 ─────────────────────────────────────────────
+# AD의 Security Group = LDAP의 groupOfNames
+
+dn: cn=개발팀,ou=groups,dc=jtbc,dc=co,dc=kr
+objectClass: groupOfNames
+cn: 개발팀
+member: uid=lee.jiyeon,ou=people,dc=jtbc,dc=co,dc=kr
+
+dn: cn=경영팀,ou=groups,dc=jtbc,dc=co,dc=kr
+objectClass: groupOfNames
+cn: 경영팀
+member: uid=choi.junho,ou=people,dc=jtbc,dc=co,dc=kr

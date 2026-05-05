@@ -1,0 +1,122 @@
+services:
+
+  # ── 공유 데이터베이스 ──────────────────────────────────────
+  postgres:
+    image: postgres:15
+    container_name: keycloak-ha-db
+
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak_password
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - keycloak-ha-net
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Keycloak 노드 1 ────────────────────────────────────────
+  keycloak-1:
+    image: quay.io/keycloak/keycloak:26.6.1
+    container_name: keycloak-node-1
+
+    entrypoint: ["/bin/bash", "-c", "/opt/keycloak/bin/kc.sh build && /opt/keycloak/bin/kc.sh start"]
+
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin_password
+
+      # ── 클러스터링 핵심 설정 ──────────────────────────────
+      # KC_CACHE=ispn: Infinispan 분산 캐시 활성화 (local → ispn)
+      # local은 단일 노드용. ispn은 노드 간 세션 복제 활성화
+      KC_CACHE: ispn
+      KC_CACHE_STACK: tcp
+      KC_CACHE_EMBEDDED_MTLS_ENABLED: "false"
+      JAVA_OPTS_APPEND: >-
+        -Xms512m -Xmx512m
+        -Djgroups.tcpping.initial_hosts=keycloak-1[7800],keycloak-2[7800]
+
+    volumes:
+      - ./keycloak.conf:/opt/keycloak/conf/keycloak.conf
+
+    networks:
+      - keycloak-ha-net
+
+    # curl/wget 미포함 이미지 → bash /dev/tcp으로 포트 확인
+    # /health/ready 응답 내용까지 검증하려면 HTTP 요청을 직접 구성
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080 && echo -e 'GET /health/ready HTTP/1.0\\r\\nHost: localhost\\r\\n\\r\\n' >&3 && cat <&3 | grep -q 'UP'"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  keycloak-2:
+    image: quay.io/keycloak/keycloak:26.6.1
+    container_name: keycloak-node-2
+
+    entrypoint: ["/bin/bash", "-c", "/opt/keycloak/bin/kc.sh build && /opt/keycloak/bin/kc.sh start"]
+
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin_password
+      KC_CACHE: ispn
+      KC_CACHE_STACK: tcp
+      KC_CACHE_EMBEDDED_MTLS_ENABLED: "false"
+      JAVA_OPTS_APPEND: >-
+        -Xms512m -Xmx512m
+        -Djgroups.tcpping.initial_hosts=keycloak-1[7800],keycloak-2[7800]
+
+    volumes:
+      - ./keycloak.conf:/opt/keycloak/conf/keycloak.conf
+
+    networks:
+      - keycloak-ha-net
+
+    # 노드2는 노드1이 완전히 기동된 후에 시작
+    # 이유: 두 노드가 동시에 DB 초기화 시 Race Condition 발생
+    # (duplicate key 오류 → 노드2 기동 실패)
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keycloak-1:
+        condition: service_healthy
+
+  # ── Nginx 로드밸런서 ───────────────────────────────────────
+  # 두 노드 앞단에서 트래픽을 분산
+  # 실제 운영에서는 HAProxy 또는 AWS ALB 사용
+  nginx:
+    image: nginx:alpine
+    container_name: keycloak-lb
+
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+
+    ports:
+      # 외부에서 8085로 접근 → nginx가 keycloak-1 또는 keycloak-2로 분산
+      - "8085:80"
+
+    networks:
+      - keycloak-ha-net
+
+    depends_on:
+      - keycloak-1
+      - keycloak-2
+
+networks:
+  keycloak-ha-net:
+    driver: bridge
+
+volumes:
+  postgres_data:

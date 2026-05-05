@@ -1,0 +1,38 @@
+# DB없는 노드에 설치하는 용도 언제나 jgroup이랑 db 커넥션 설정 IP을 잘 확인하자
+services:
+  keycloak:
+    # 2026년 5월 4일 기준 가장 최신
+    image: quay.io/keycloak/keycloak:26.6.1
+    container_name: keycloak
+    network_mode: host
+
+    # Keycloak 이미지의 ENTRYPOINT는 /opt/keycloak/bin/kc.sh 로 고정되어 있음
+    # command로 오버라이드하면 kc.sh의 인자로 전달되므로 entrypoint를 교체해야 함
+    entrypoint: ["/bin/bash", "-c", "/opt/keycloak/bin/kc.sh build && /opt/keycloak/bin/kc.sh start"]
+
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: saltware1234
+
+      # ── 클러스터링 핵심 설정 ──────────────────────────────
+      # 서버 RAM의 50~70% 할당
+      # jgroups.bind.port 기본 7800포트 
+      JAVA_OPTS_APPEND: >-
+        -Xms3g -Xmx3g
+      # -Djgroups.bind.address=10.111.11.116
+      # -Djgroups.tcpping.initial_hosts=10.111.10.207[7800],10.111.11.116[7800]
+
+    volumes:
+      # Keycloak은 /opt/keycloak/conf/keycloak.conf 를 자동으로 읽음
+      - ./keycloak.conf:/opt/keycloak/conf/keycloak.conf
+
+#     ports:
+#       - "8080:8080"
+#       - "7800:7800"
+#       - "9000:9000"
+#     networks:
+#       - keycloak-net
+
+# networks:
+#   keycloak-net:
+#     driver: bridge

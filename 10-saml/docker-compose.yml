@@ -1,0 +1,20 @@
+services:
+
+  # SimpleSAMLphp: SAML SP 역할 (레거시 그룹웨어 대체)
+  simplesamlphp:
+    image: kristophjunge/test-saml-idp:latest
+    container_name: saml-sp
+    ports:
+      - "8091:80"
+    environment:
+      SIMPLESAMLPHP_SP_ENTITY_ID: http://localhost:8091/simplesaml/module.php/saml/sp/metadata.php/default-sp
+      SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE: http://localhost:8091/simplesaml/module.php/saml/sp/saml2-acs.php/default-sp
+      SIMPLESAMLPHP_SP_SINGLE_LOGOUT_SERVICE: http://localhost:8091/simplesaml/module.php/saml/sp/saml2-logout.php/default-sp
+      SIMPLESAMLPHP_IDP_SINGLE_SIGN_ON_SERVICE: http://localhost:8080/realms/jtbc/protocol/saml
+      SIMPLESAMLPHP_IDP_SINGLE_LOGOUT_SERVICE: http://localhost:8080/realms/jtbc/protocol/saml
+    networks:
+      - saml-net
+
+networks:
+  saml-net:
+    driver: bridge
