@@ -1,0 +1,786 @@
+- generic [active] [ref=e1]:
+  - generic:
+    - generic:
+      - link "주요 콘텐츠로 이동" [ref=e2] [cursor=pointer]
+      - link "접근성 도움말" [ref=e3] [cursor=pointer]:
+        - /url: https://support.google.com/websearch/answer/181196?hl=ko
+      - link "접근성 관련 의견 보내기" [ref=e4] [cursor=pointer]
+  - generic [ref=e9]:
+    - search [ref=e10]:
+      - generic [ref=e12]:
+        - link "Google 홈페이지로 이동" [ref=e14] [cursor=pointer]:
+          - /url: https://www.google.com/webhp?hl=ko&sa=X&ved=0ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQPAgJ
+          - img [ref=e15]
+        - generic [ref=e17]:
+          - generic [ref=e18]:
+            - combobox "검색" [ref=e21]: dog dog
+            - generic [ref=e22]:
+              - button "지우기" [ref=e24] [cursor=pointer]:
+                - img [ref=e26]
+              - generic [ref=e29]:
+                - button "입력 도구" [ref=e30] [cursor=pointer]:
+                  - img [ref=e32]
+                - button "음성 검색" [ref=e34] [cursor=pointer]:
+                  - img [ref=e35]
+                - button "이미지로 검색" [ref=e37] [cursor=pointer]:
+                  - img [ref=e38]
+          - button "검색" [ref=e40] [cursor=pointer]:
+            - img [ref=e43]
+    - generic [ref=e46]:
+      - button "Google 앱" [ref=e48] [cursor=pointer]:
+        - img [ref=e49]
+      - 'button "Google 계정: BaeSeungDo (svvwac98@gmail.com)" [ref=e53] [cursor=pointer]':
+        - img [ref=e55]
+        - img [ref=e60]
+  - generic [ref=e62]:
+    - navigation [ref=e68]:
+      - generic [ref=e74]:
+        - list [ref=e75]:
+          - listitem [ref=e76]:
+            - link "AI 모드" [ref=e79] [cursor=pointer]:
+              - /url: /search?q=dog&sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&udm=50&source=hp&fbs=ADc_l-bD_nyrjATWBKup7flJ4rea5XFXsPHwMjGsTekJ1HCohLl5jVfW6Wa1gJhEgNeZVlX4vEYjwla_a-g0kroAFGNtIhWZBipdokEENQdohs3eIOdR8tBFRl5UjHoE02is7_XgcxtDrcqnvuD9BaGxwhaf_LPLmOaQn4e5RQOpjSGIzP0M_pcxnskBEPUguFvbiDKbPD9LR-Rdtxx3UnUu4Rn4sf9NMOTDP6XZNLBr7meC6HduOdY&aep=1&ntc=1&sa=X&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ2J8OegQIDxAD
+              - generic [ref=e82]: AI 모드
+          - listitem [ref=e83]:
+            - link "전체" [disabled] [ref=e84]:
+              - generic [ref=e86]: 전체
+          - listitem [ref=e87]:
+            - link "이미지" [ref=e88] [cursor=pointer]:
+              - /url: /search?sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&udm=2&fbs=ADc_l-bD_nyrjATWBKup7flJ4rea5XFXsPHwMjGsTekJ1HCohLl5jVfW6Wa1gJhEgNeZVlX4vEYjwla_a-g0kroAFGNtIhWZBipdokEENQdohs3eIOdR8tBFRl5UjHoE02is7_XgcxtDrcqnvuD9BaGxwhaf_LPLmOaQn4e5RQOpjSGIzP0M_pcxnskBEPUguFvbiDKbPD9LR-Rdtxx3UnUu4Rn4sf9NMOTDP6XZNLBr7meC6HduOdY&q=dog&sa=X&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQtKgLegQIFRAB
+              - generic [ref=e90]: 이미지
+          - listitem [ref=e91]:
+            - link "쇼핑" [ref=e92] [cursor=pointer]:
+              - /url: /search?sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&udm=28&fbs=ADc_l-bD_nyrjATWBKup7flJ4rea5XFXsPHwMjGsTekJ1HCohLl5jVfW6Wa1gJhEgNeZVlX4vEYjwla_a-g0kroAFGNtIhWZBipdokEENQdohs3eIOdR8tBFRl5UjHoE02is7_XgcxtDrcqnvuD9BaGxwhaf_LPLmOaQn4e5RQOpjSGIzP0M_pcxnskBEPUguFvbiDKbPD9LR-Rdtxx3UnUu4Rn4sf9NMOTDP6XZNLBr7meC6HduOdY&q=dog&ved=1t:220175&ictx=111
+              - generic [ref=e94]: 쇼핑
+          - listitem [ref=e95]:
+            - link "동영상" [ref=e96] [cursor=pointer]:
+              - /url: /search?sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&udm=7&fbs=ADc_l-bD_nyrjATWBKup7flJ4rea5XFXsPHwMjGsTekJ1HCohLl5jVfW6Wa1gJhEgNeZVlX4vEYjwla_a-g0kroAFGNtIhWZBipdokEENQdohs3eIOdR8tBFRl5UjHoE02is7_XgcxtDrcqnvuD9BaGxwhaf_LPLmOaQn4e5RQOpjSGIzP0M_pcxnskBEPUguFvbiDKbPD9LR-Rdtxx3UnUu4Rn4sf9NMOTDP6XZNLBr7meC6HduOdY&q=dog&sa=X&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQtKgLegQIERAB
+              - generic [ref=e98]: 동영상
+          - listitem [ref=e99]:
+            - link "뉴스" [ref=e100] [cursor=pointer]:
+              - /url: /search?sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&q=dog&tbm=nws&source=lnms&fbs=ADc_l-bD_nyrjATWBKup7flJ4rea5XFXsPHwMjGsTekJ1HCohLl5jVfW6Wa1gJhEgNeZVlX4vEYjwla_a-g0kroAFGNtIhWZBipdokEENQdohs3eIOdR8tBFRl5UjHoE02is7_XgcxtDrcqnvuD9BaGxwhaf_LPLmOaQn4e5RQOpjSGIzP0M_pcxnskBEPUguFvbiDKbPD9LR-Rdtxx3UnUu4Rn4sf9NMOTDP6XZNLBr7meC6HduOdY&sa=X&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ0pQJegQIExAB
+              - generic [ref=e102]: 뉴스
+          - listitem [ref=e103]:
+            - link "짧은 동영상" [ref=e104] [cursor=pointer]:
+              - /url: /search?sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&udm=39&fbs=ADc_l-bD_nyrjATWBKup7flJ4rea5XFXsPHwMjGsTekJ1HCohLl5jVfW6Wa1gJhEgNeZVlX4vEYjwla_a-g0kroAFGNtIhWZBipdokEENQdohs3eIOdR8tBFRl5UjHoE02is7_XgcxtDrcqnvuD9BaGxwhaf_LPLmOaQn4e5RQOpjSGIzP0M_pcxnskBEPUguFvbiDKbPD9LR-Rdtxx3UnUu4Rn4sf9NMOTDP6XZNLBr7meC6HduOdY&q=dog&sa=X&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQs6gLegQIEhAB
+              - generic [ref=e106]: 짧은 동영상
+          - listitem [ref=e107]:
+            - button "필터 더보기" [ref=e108] [cursor=pointer]:
+              - generic "필터 더보기" [ref=e109]:
+                - generic [ref=e110]:
+                  - generic [ref=e111]: 더보기
+                  - img [ref=e113]
+        - button "도구" [ref=e116] [cursor=pointer]:
+          - generic [ref=e118]:
+            - generic [ref=e119]: 도구
+            - img [ref=e121]
+    - heading "검색결과" [level=1] [ref=e123]
+    - generic [ref=e128]:
+      - generic [ref=e135]:
+        - generic [ref=e145]:
+          - generic [ref=e147]:
+            - generic [ref=e149]:
+              - generic [ref=e150]:
+                - img [ref=e151]
+                - heading "AI 개요" [level=2] [ref=e153]
+              - button "검색결과에 관한 정보" [ref=e157]:
+                - img [ref=e159]
+            - generic [ref=e177]:
+              - generic [ref=e179]:
+                - generic [ref=e180]:
+                  - text: "개(dog, 학명:"
+                  - emphasis [ref=e181]: Canis lupus familiaris
+                  - text: )는
+                  - mark [ref=e182]: 회색늑대에서 가축화된 가장 대표적인 반려동물
+                  - text: 입니다. 인간과 오랜 역사를 공유하며 반려견, 사냥견, 보호견 등 다양한 역할을 수행하며
+                  - link "3" [ref=e184] [cursor=pointer]:
+                    - /url: /url?sa=i&source=web&rct=j&url=https://ko.wikipedia.org/wiki/%25EA%25B0%259C&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQy_kOegYIAQgAEAQ&opi=89978449&cd&psig=AOvVaw2K2TnibGENUcI4OxbYNUwp&ust=1778112071421000
+                  - text: ", 뛰어난 후각과 청각을 바탕으로 인류의 동반자로서 사랑받고 있습니다"
+                  - link "5" [ref=e186] [cursor=pointer]:
+                    - /url: /url?sa=i&source=web&rct=j&url=https://en.wikipedia.org/wiki/Dog&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQy_kOegYIAQgAEAU&opi=89978449&cd&psig=AOvVaw2K2TnibGENUcI4OxbYNUwp&ust=1778112071421000
+                  - text: .
+                  - button "관련 링크 보기" [ref=e189] [cursor=pointer]:
+                    - img [ref=e191]
+                - strong [ref=e194]: 핵심 정보
+                - list [ref=e196]:
+                  - listitem [ref=e197]:
+                    - generic [ref=e198]:
+                      - strong [ref=e199]: "특징:"
+                      - text: 품종에 따라 다양한 크기, 형태, 털색을 가지며 약 42개의 치아와 발달한 감각을 가졌습니다
+                      - generic [ref=e200]: "5"
+                      - text: .
+                  - listitem [ref=e201]:
+                    - generic [ref=e202]:
+                      - strong [ref=e203]: "역사:"
+                      - text: 인류가 최초로 가축으로 삼은 동물로, 늑대의 후손입니다
+                      - generic [ref=e204]: "3"
+                      - text: .
+                  - listitem [ref=e205]:
+                    - generic [ref=e206]:
+                      - strong [ref=e207]: "역할:"
+                      - text: 보호, 사냥, 맹인 안내, 훈련, 군사/경찰견 등 다양한 목적으로 활용됩니다
+                      - generic [ref=e208]: "5"
+                      - text: .
+                  - listitem [ref=e209]:
+                    - generic [ref=e210]:
+                      - strong [ref=e211]: "관리:"
+                      - link [ref=e213] [cursor=pointer]:
+                        - /url: /url?sa=i&source=web&rct=j&url=https://www.aspca.org/pet-care/dog-care/general-dog-care&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQy_kOegYIAQgAEA4&opi=89978449&cd&psig=AOvVaw2K2TnibGENUcI4OxbYNUwp&ust=1778112071421000
+                        - text: ASPCA
+                      - text: 의 조언에 따라 자주 빗질하여 털 빠짐을 관리하고, 더운 날씨에는 진드기 검사를 해야 합니다
+                      - generic [ref=e214]: "11"
+                      - text: .
+                  - listitem [ref=e215]:
+                    - generic [ref=e216]:
+                      - strong [ref=e217]: "문화:"
+                      - generic [ref=e218]:
+                        - text: 반려견을 위한 TV 채널인
+                        - link [ref=e220] [cursor=pointer]:
+                          - /url: /url?sa=i&source=web&rct=j&url=https://thedogtv.com/&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQy_kOegYIAQgBEAA&opi=89978449&cd&psig=AOvVaw2K2TnibGENUcI4OxbYNUwp&ust=1778112071421000
+                          - text: 도그TV
+                        - text: 는 정서 안정과 분리불안 해소에 도움을 줄 수 있습니다
+                        - generic [ref=e221]: "6"
+                        - text: .
+                    - button [ref=e225] [cursor=pointer]:
+                      - img [ref=e227]
+                - generic [ref=e229]:
+                  - strong [ref=e232]: 언어 및 의미
+                  - list [ref=e234]:
+                    - listitem [ref=e235]:
+                      - generic [ref=e236]:
+                        - strong [ref=e237]: "영어:"
+                        - text: Dog.
+                    - listitem [ref=e238]:
+                      - generic [ref=e239]:
+                        - strong [ref=e240]: "한국어:"
+                        - text: 개, 강아지(어린 개).
+                    - listitem [ref=e241]:
+                      - generic [ref=e242]:
+                        - strong [ref=e243]: "슬랭/비속어:"
+                        - text: 사람을 뜻할 때 불쾌하거나 신뢰할 수 없는 남자를 의미하기도 합니다
+                        - link [ref=e245] [cursor=pointer]:
+                          - /url: /url?sa=i&source=web&rct=j&url=https://dictionary.cambridge.org/ko/%25EC%2582%25AC%25EC%25A0%2584/%25EC%2598%2581%25EC%2596%25B4/dog&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQy_kOegYIAQgDEAc&opi=89978449&cd&psig=AOvVaw2K2TnibGENUcI4OxbYNUwp&ust=1778112071421000
+                          - text: "7"
+                        - text: .
+                      - button [ref=e248] [cursor=pointer]:
+                        - img [ref=e250]
+                  - strong [ref=e254]: 대중 매체
+                  - list [ref=e256]:
+                    - listitem [ref=e257]:
+                      - generic [ref=e258]:
+                        - text: 채닝 테이텀 주연의 2022년 코미디 드라마 영화 '도그(Dog)'가 있습니다
+                        - link [ref=e260] [cursor=pointer]:
+                          - /url: /url?sa=i&source=web&rct=j&url=https://www.imdb.com/title/tt11252248/&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQy_kOegYIAQgDEA4&opi=89978449&cd&psig=AOvVaw2K2TnibGENUcI4OxbYNUwp&ust=1778112071421000
+                          - text: "8"
+                        - text: .
+                      - button [ref=e263] [cursor=pointer]:
+                        - img [ref=e265]
+              - generic [ref=e272]:
+                - list [ref=e275]:
+                  - listitem [ref=e276]:
+                    - generic [ref=e277]:
+                      - link "개 - 위키백과, 우리 모두의 백과사전. 새 탭에서 열립니다." [ref=e278] [cursor=pointer]:
+                        - /url: /url?sa=t&source=web&rct=j&url=https%3A%2F%2Fko.wikipedia.org%2Fwiki%2F%25EA%25B0%259C&ved=0CAEQqYcPahcKEwjQ9InkraOUAxUAAAAAHQAAAAAQCg&opi=89978449
+                      - generic [ref=e279]:
+                        - generic [ref=e281]:
+                          - generic [ref=e282]: 개 - 위키백과, 우리 모두의 백과사전
+                          - generic [ref=e283]: "개(학명: Canis lupus familiaris )는 중형 동물이자 가장 널리 분포하며 개체 수가 가장 ..."
+                        - generic [ref=e285]:
+                          - generic [ref=e290]: Wikipedia
+                          - button "검색 결과 정보" [ref=e292] [cursor=pointer]:
+                            - img [ref=e293]
+                  - listitem [ref=e296]:
+                    - generic [ref=e297]:
+                      - link "Dog - Wikipedia. 새 탭에서 열립니다." [ref=e298] [cursor=pointer]:
+                        - /url: /url?sa=t&source=web&rct=j&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FDog&ved=0CAEQqYcPahcKEwjQ9InkraOUAxUAAAAAHQAAAAAQCw&opi=89978449
+                      - generic [ref=e299]:
+                        - generic [ref=e301]:
+                          - generic [ref=e302]: Dog - Wikipedia
+                          - generic [ref=e303]: Dogs have been bred for desired behaviors, sensory capabilit...
+                        - generic [ref=e305]:
+                          - generic [ref=e310]: Wikipedia
+                          - button [ref=e312] [cursor=pointer]:
+                            - img [ref=e313]
+                  - listitem [ref=e316]:
+                    - generic [ref=e317]:
+                      - link [ref=e318] [cursor=pointer]:
+                        - /url: /url?sa=t&source=web&rct=j&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D8M7xXbZzUvw%26t%3D402&ved=0CAEQqYcPahcKEwjQ9InkraOUAxUAAAAAHQAAAAAQDA&opi=89978449
+                      - generic [ref=e319]:
+                        - generic [ref=e320]:
+                          - generic [ref=e321]:
+                            - generic [ref=e322]: "Kang Hyeonguk's Favorite Dog Breed / Dog Breed Encyclopedia: German ..."
+                            - generic [ref=e323]: 셰퍼드는 털이 매우 많이 빠지는 견종으로, 털갈이 시기에는 특히 심합니다. 침을 흘리는 양도 많아 여러모로 ...
+                          - button [ref=e326] [cursor=pointer]:
+                            - generic [ref=e328]:
+                              - img [ref=e329]
+                              - generic [ref=e331]: 2m
+                            - img [ref=e336]
+                        - generic [ref=e338]:
+                          - generic [ref=e342]:
+                            - generic [ref=e343]: YouTube
+                            - generic [ref=e344]: ·
+                            - generic [ref=e345]: 강형욱의 보듬TV
+                          - button [ref=e347] [cursor=pointer]:
+                            - img [ref=e348]
+                - button [ref=e351] [cursor=pointer]:
+                  - generic [ref=e352]: 모두 표시
+          - button "AI 개요 더보기" [ref=e356]:
+            - generic [ref=e358] [cursor=pointer]:
+              - generic [ref=e359]: 더보기
+              - img [ref=e361]
+        - generic [ref=e367]:
+          - heading "이미지" [level=2] [ref=e371]
+          - generic [ref=e376]:
+            - generic [ref=e380] [cursor=pointer]:
+              - link "Adopt a Dog | Atlanta Humane Society Atlanta Humane Society":
+                - /url: https://atlantahumane.org/adopt/dogs/
+              - button "Adopt a Dog | Atlanta Humane Society" [ref=e382]:
+                - img "Adopt a Dog | Atlanta Humane Society" [ref=e384]
+              - generic [ref=e386]:
+                - generic [ref=e388]: Adopt a Dog | Atlanta Humane Society
+                - generic [ref=e389]:
+                  - generic [ref=e396]: Atlanta Humane Society
+                  - button "검색결과에 관한 정보" [ref=e399]:
+                    - img [ref=e402]
+            - generic [ref=e407] [cursor=pointer]:
+              - link "40 Cutest Dog Breeds That Will Melt Your Heart Good Housekeeping":
+                - /url: https://www.goodhousekeeping.com/life/pets/g4531/cutest-dog-breeds/
+              - button "40 Cutest Dog Breeds That Will Melt Your Heart" [ref=e409]:
+                - img "40 Cutest Dog Breeds That Will Melt Your Heart" [ref=e411]
+              - generic [ref=e413]:
+                - generic [ref=e415]: 40 Cutest Dog Breeds That Will Melt Your Heart
+                - generic [ref=e416]:
+                  - generic [ref=e423]: Good Housekeeping
+                  - button "검색결과에 관한 정보" [ref=e426]:
+                    - img [ref=e429]
+            - generic [ref=e434] [cursor=pointer]:
+              - 'link "Labrador Dog Breed Guide: Care and Training | BorrowMyDoggy BorrowMyDoggy"':
+                - /url: https://www.borrowmydoggy.com/doggypedia/dog-breed-guides-labrador
+              - 'button "Labrador Dog Breed Guide: Care and Training | BorrowMyDoggy" [ref=e436]':
+                - 'img "Labrador Dog Breed Guide: Care and Training | BorrowMyDoggy" [ref=e438]'
+              - generic [ref=e440]:
+                - generic [ref=e442]: "Labrador Dog Breed Guide: Care and Training | BorrowMyDoggy"
+                - generic [ref=e443]:
+                  - generic [ref=e450]: BorrowMyDoggy
+                  - button "검색결과에 관한 정보" [ref=e453]:
+                    - img [ref=e456]
+            - generic [ref=e461] [cursor=pointer]:
+              - link "How to Read Your Dog's Body Language www.outsideonline.com":
+                - /url: https://www.outsideonline.com/culture/active-families/how-to-read-dog-body-language-happy-aggressive/
+              - button "How to Read Your Dog's Body Language" [ref=e463]:
+                - img "How to Read Your Dog's Body Language" [ref=e465]
+              - generic [ref=e467]:
+                - generic [ref=e469]: How to Read Your Dog's Body Language
+                - generic [ref=e470]:
+                  - generic [ref=e477]: www.outsideonline.com
+                  - button "검색결과에 관한 정보" [ref=e480]:
+                    - img [ref=e483]
+            - generic [ref=e488] [cursor=pointer]:
+              - 'link "Most Popular Dog Breeds: America''s 50 Favorite Dogs Country Living Magazine"':
+                - /url: https://www.countryliving.com/life/kids-pets/g3283/the-50-most-popular-dog-breeds/
+              - 'button "Most Popular Dog Breeds: America''s 50 Favorite Dogs" [ref=e490]':
+                - 'img "Most Popular Dog Breeds: America''s 50 Favorite Dogs" [ref=e492]'
+              - generic [ref=e494]:
+                - generic [ref=e496]: "Most Popular Dog Breeds: America's 50 Favorite Dogs"
+                - generic [ref=e497]:
+                  - generic [ref=e504]: Country Living Magazine
+                  - button "검색결과에 관한 정보" [ref=e507]:
+                    - img [ref=e510]
+            - generic [ref=e515] [cursor=pointer]:
+              - link "Dog Pictures | Download Free Images on Unsplash Unsplash":
+                - /url: https://unsplash.com/s/photos/dog
+              - button "Dog Pictures | Download Free Images on Unsplash" [ref=e517]:
+                - img "Dog Pictures | Download Free Images on Unsplash" [ref=e519]
+              - generic [ref=e521]:
+                - generic [ref=e523]: Dog Pictures | Download Free Images on Unsplash
+                - generic [ref=e524]:
+                  - generic [ref=e531]: Unsplash
+                  - button "검색결과에 관한 정보" [ref=e534]:
+                    - img [ref=e537]
+            - generic [ref=e542] [cursor=pointer]:
+              - link "Beagle | Overview, Lifespan, Health, History & Temperament ... Britannica":
+                - /url: https://www.britannica.com/animal/beagle-dog
+              - button "Beagle | Overview, Lifespan, Health, History & Temperament ..." [ref=e544]:
+                - img "Beagle | Overview, Lifespan, Health, History & Temperament ..." [ref=e546]
+              - generic [ref=e548]:
+                - generic [ref=e550]: Beagle | Overview, Lifespan, Health, History & Temperament ...
+                - generic [ref=e551]:
+                  - generic [ref=e558]: Britannica
+                  - button "검색결과에 관한 정보" [ref=e561]:
+                    - img [ref=e564]
+            - generic [ref=e569] [cursor=pointer]:
+              - link "The Top 10 Most Popular Dogs By Category — Dan's Pet Care Dan's Pet Care":
+                - /url: https://danspetcare.com/pets/an-extensive-guide-to-the-most-common-dogs
+              - button "The Top 10 Most Popular Dogs By Category — Dan's Pet Care" [ref=e571]:
+                - img "The Top 10 Most Popular Dogs By Category — Dan's Pet Care" [ref=e573]
+              - generic [ref=e575]:
+                - generic [ref=e577]: The Top 10 Most Popular Dogs By Category — Dan's Pet Care
+                - generic [ref=e578]:
+                  - generic [ref=e585]: Dan's Pet Care
+                  - button "검색결과에 관한 정보" [ref=e588]:
+                    - img [ref=e591]
+            - generic [ref=e596] [cursor=pointer]:
+              - link "Best Dog Breeds for a Family - Purina Australia Purina Australia":
+                - /url: https://www.purina.com.au/best-dog-breeds-for-a-family.html
+              - button "Best Dog Breeds for a Family - Purina Australia" [ref=e598]:
+                - img "Best Dog Breeds for a Family - Purina Australia" [ref=e600]
+              - generic [ref=e602]:
+                - generic [ref=e604]: Best Dog Breeds for a Family - Purina Australia
+                - generic [ref=e605]:
+                  - generic [ref=e612]: Purina Australia
+                  - button "검색결과에 관한 정보" [ref=e615]:
+                    - img [ref=e618]
+            - generic [ref=e623] [cursor=pointer]:
+              - link "General Dog Care | ASPCA ASPCA":
+                - /url: https://www.aspca.org/pet-care/dog-care/general-dog-care
+              - button "General Dog Care | ASPCA" [ref=e625]:
+                - img "General Dog Care | ASPCA" [ref=e627]
+              - generic [ref=e629]:
+                - generic [ref=e631]: General Dog Care | ASPCA
+                - generic [ref=e632]:
+                  - generic [ref=e639]: ASPCA
+                  - button "검색결과에 관한 정보" [ref=e642]:
+                    - img [ref=e645]
+          - button "이미지 더보기" [ref=e648] [cursor=pointer]:
+            - separator [ref=e649]
+            - generic [ref=e650]:
+              - generic [ref=e651]: 이미지 더보기
+              - img [ref=e653]
+      - main [ref=e655]:
+        - generic [ref=e659]:
+          - generic [ref=e662]:
+            - heading "웹 검색결과" [level=2] [ref=e663]
+            - generic [ref=e664]:
+              - generic [ref=e667]:
+                - link "개 - 위키백과, 우리 모두의 백과사전 Wikipedia https://ko.wikipedia.org › wiki › 개" [ref=e669] [cursor=pointer]:
+                  - /url: https://ko.wikipedia.org/wiki/%EA%B0%9C
+                  - heading "개 - 위키백과, 우리 모두의 백과사전" [level=3] [ref=e670]
+                  - generic [ref=e675]:
+                    - generic [ref=e677]: Wikipedia
+                    - generic [ref=e679]: https://ko.wikipedia.org › wiki › 개
+                - button "검색결과에 관한 정보" [ref=e680] [cursor=pointer]:
+                  - img [ref=e683]
+              - generic [ref=e686]: "개(학명: Canis lupus familiaris )는 중형 동물이자 가장 널리 분포하며 개체 수가 가장 많은 지상 동물 중 하나이며 가축화된 회색늑대이다. 개는 인류가 최초로 ..."
+          - generic [ref=e690]:
+            - generic [ref=e693]:
+              - link "도그 나무위키 https://namu.wiki › 도그" [ref=e695] [cursor=pointer]:
+                - /url: https://namu.wiki/w/%EB%8F%84%EA%B7%B8
+                - heading "도그" [level=3] [ref=e696]
+                - generic [ref=e701]:
+                  - generic [ref=e703]: 나무위키
+                  - generic [ref=e705]: https://namu.wiki › 도그
+              - button "검색결과에 관한 정보" [ref=e706] [cursor=pointer]:
+                - img [ref=e709]
+            - generic [ref=e712]:
+              - generic [ref=e713]: 2025. 12. 10. —
+              - generic [ref=e714]:
+                - emphasis [ref=e715]: 영어로 개라는
+                - text: 뜻. 본래는 고대 게르만어인 hund에서 변형된 hound가 개를 통칭하는 말로 쓰였고, 중세 영어 dogge는 마스티프 계통의 대형 개만을 ...
+          - generic [ref=e722]:
+            - generic [ref=e725]:
+              - link "I Talked About Dogs with Orbit [Dog Talk] YouTube · 강형욱의 보듬TV 조회수 32.9만회 이상 · 3주 전" [ref=e727] [cursor=pointer]:
+                - /url: https://www.youtube.com/watch?v=9bxDA0owrcc
+                - heading "I Talked About Dogs with Orbit [Dog Talk]" [level=3] [ref=e728]
+                - generic [ref=e733]:
+                  - generic [ref=e735]: YouTube · 강형욱의 보듬TV
+                  - generic [ref=e737]: 조회수 32.9만회 이상 · 3주 전
+              - button "검색결과에 관한 정보" [ref=e738] [cursor=pointer]:
+                - img [ref=e741]
+            - generic [ref=e743]:
+              - button "강형욱의 보듬TV님이 YouTube에 게시한 I Talked About Dogs with Orbit [Dog Talk]. Google에서 재생. 53:11" [ref=e744] [cursor=pointer]:
+                - generic [ref=e746]:
+                  - img [ref=e749]
+                  - generic [ref=e752]:
+                    - generic [ref=e753]: 53:11
+                    - img [ref=e756]
+              - generic [ref=e759]: 강아지에 대한 별별 궁금증을 재밌고 가볍게 풀어봤습니다 강아지랑 대화하는 날이 올까요? 강아지 수명이 50년으로 늘어난다면 어떨까요?
+            - button "이 동영상의 주요 순간 8개" [ref=e764] [cursor=pointer]:
+              - generic [ref=e767]:
+                - generic [ref=e770]: 이 동영상의 주요 순간 8개
+                - img [ref=e772]
+          - generic [ref=e777]:
+            - generic [ref=e780]:
+              - link "dog - 위키낱말사전 Wiktionary https://ko.wiktionary.org › wiki › dog" [ref=e782] [cursor=pointer]:
+                - /url: https://ko.wiktionary.org/wiki/dog
+                - heading "dog - 위키낱말사전" [level=3] [ref=e783]
+                - generic [ref=e788]:
+                  - generic [ref=e790]: Wiktionary
+                  - generic [ref=e792]: https://ko.wiktionary.org › wiki › dog
+              - button "검색결과에 관한 정보" [ref=e793] [cursor=pointer]:
+                - img [ref=e796]
+            - generic [ref=e800]:
+              - text: 명사 ·
+              - emphasis [ref=e801]: 개
+              - text: . · 남자(슬랭) · 성적으로 공격적인 남자(슬랭) · 이빨 모양의 투영으로 무언가를 잡고, 고정하기 위한 기계 장치. · 등받이의 동작을 억제하기 위해 래칫 휠의 ...
+            - 'link "dog(출처: ko.wiktionary.org)" [ref=e804] [cursor=pointer]':
+              - /url: https://ko.wiktionary.org/wiki/dog
+              - 'img "dog(출처: ko.wiktionary.org)" [ref=e806]'
+          - generic [ref=e810]:
+            - generic [ref=e812]:
+              - heading "동영상" [level=2] [ref=e813]
+              - button "검색결과에 관한 정보" [ref=e814] [cursor=pointer]:
+                - img [ref=e817]
+            - generic [ref=e820]:
+              - generic [ref=e826]:
+                - generic [ref=e827]:
+                  - generic [ref=e828]:
+                    - link "The First Chubby Dog Show Off Contest YouTube 강형욱의 보듬TV 2025. 11. 22." [ref=e830] [cursor=pointer]:
+                      - /url: https://www.youtube.com/watch?v=sym3WcnlnDA
+                      - heading "The First Chubby Dog Show Off Contest YouTube 강형욱의 보듬TV 2025. 11. 22." [level=3] [ref=e831]:
+                        - generic [ref=e834]: The First Chubby Dog Show Off Contest
+                        - generic [ref=e836]:
+                          - generic [ref=e837]:
+                            - text: YouTube
+                            - generic [ref=e838]: · 강형욱의 보듬TV
+                          - generic [ref=e839]: 2025. 11. 22.
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - text: YouTube
+                              - generic: · 강형욱의 보듬TV
+                        - button "검색결과에 관한 정보" [ref=e840] [cursor=pointer]:
+                          - img [ref=e843]
+                  - button "강형욱의 보듬TV님이 YouTube에 게시한 The First Chubby Dog Show Off Contest. Google에서 재생. 32:46" [ref=e845] [cursor=pointer]:
+                    - generic [ref=e846]:
+                      - img [ref=e852]
+                      - generic [ref=e855]:
+                        - generic [ref=e856]: 32:46
+                        - img [ref=e859]
+                - generic [ref=e864]:
+                  - button "이 동영상의 주요 순간 12개" [expanded] [ref=e865] [cursor=pointer]:
+                    - generic [ref=e868]:
+                      - generic [ref=e871]: 이 동영상의 주요 순간 12개
+                      - img [ref=e873]
+                  - generic [ref=e877]:
+                    - list [ref=e879]:
+                      - generic [ref=e880]:
+                        - link "오프닝. 0초의 1, 12." [ref=e881] [cursor=pointer]:
+                          - /url: https://www.youtube.com/watch?v=sym3WcnlnDA&t=0
+                          - generic [ref=e884]:
+                            - generic [ref=e886]: 00:00
+                            - generic [ref=e887]: 오프닝
+                        - link "첫 번째 출연견. 2분 4초의 2, 12." [ref=e888] [cursor=pointer]:
+                          - /url: https://www.youtube.com/watch?v=sym3WcnlnDA&t=124
+                          - generic [ref=e891]:
+                            - generic [ref=e893]: 02:04
+                            - generic [ref=e894]: 첫 번째 출연견
+                        - link "두 번째 출연견. 5분 57초의 3, 12." [ref=e895] [cursor=pointer]:
+                          - /url: https://www.youtube.com/watch?v=sym3WcnlnDA&t=357
+                          - generic [ref=e898]:
+                            - generic [ref=e900]: 05:57
+                            - generic [ref=e901]: 두 번째 출연견
+                        - link "세 번째 출연견. 8분 55초의 4, 12." [ref=e902] [cursor=pointer]:
+                          - /url: https://www.youtube.com/watch?v=sym3WcnlnDA&t=535
+                          - generic [ref=e905]:
+                            - generic [ref=e907]: 08:55
+                            - generic [ref=e908]: 세 번째 출연견
+                        - link "네 번째 출연견. 11분 7초의 5, 12." [ref=e909] [cursor=pointer]:
+                          - /url: https://www.youtube.com/watch?v=sym3WcnlnDA&t=667
+                          - generic [ref=e912]:
+                            - generic [ref=e914]: 11:07
+                            - generic [ref=e915]: 네 번째 출연견
+                        - link "다섯 번째 출연견. 13분 5초의 6, 12." [ref=e916] [cursor=pointer]:
+                          - /url: https://www.youtube.com/watch?v=sym3WcnlnDA&t=785
+                          - generic [ref=e919]:
+                            - generic [ref=e921]: 13:05
+                            - generic [ref=e922]: 다섯 번째 출연견
+                        - link "여섯 번째 출연견. 15분 56초의 7, 12." [ref=e923] [cursor=pointer]:
+                          - /url: https://www.youtube.com/watch?v=sym3WcnlnDA&t=956
+                          - generic [ref=e926]:
+                            - generic [ref=e928]: 15:56
+                            - generic [ref=e929]: 여섯 번째 출연견
+                        - link "일곱 번째 출연견. 18분 52초의 8, 12." [ref=e930] [cursor=pointer]:
+                          - /url: https://www.youtube.com/watch?v=sym3WcnlnDA&t=1132
+                          - generic [ref=e933]:
+                            - generic [ref=e935]: 18:52
+                            - generic [ref=e936]: 일곱 번째 출연견
+                        - link "여덟 번째 출연견. 20분 55초의 9, 12." [ref=e937] [cursor=pointer]:
+                          - /url: https://www.youtube.com/watch?v=sym3WcnlnDA&t=1255
+                          - generic [ref=e940]:
+                            - generic [ref=e942]: 20:55
+                            - generic [ref=e943]: 여덟 번째 출연견
+                        - link "아홉 번째 출연견. 23분 6초의 10, 12." [ref=e944] [cursor=pointer]:
+                          - /url: https://www.youtube.com/watch?v=sym3WcnlnDA&t=1386
+                          - generic [ref=e947]:
+                            - generic [ref=e949]: 23:06
+                            - generic [ref=e950]: 아홉 번째 출연견
+                        - link "열 번째 출연견. 26분 47초의 11, 12." [ref=e951] [cursor=pointer]:
+                          - /url: https://www.youtube.com/watch?v=sym3WcnlnDA&t=1607
+                          - generic [ref=e954]:
+                            - generic [ref=e956]: 26:47
+                            - generic [ref=e957]: 열 번째 출연견
+                        - link "간식타임. 29분 36초의 12, 12." [ref=e958] [cursor=pointer]:
+                          - /url: https://www.youtube.com/watch?v=sym3WcnlnDA&t=1776
+                          - generic [ref=e961]:
+                            - generic [ref=e963]: 29:36
+                            - generic [ref=e964]: 간식타임
+                    - button [ref=e965] [cursor=pointer]:
+                      - img [ref=e968]
+              - generic [ref=e976]:
+                - generic [ref=e977]:
+                  - generic [ref=e978]:
+                    - link "“What if you encounter an aggressive dog on the street ... YouTube 강형욱의 보듬TV 2026. 2. 14." [ref=e980] [cursor=pointer]:
+                      - /url: https://www.youtube.com/watch?v=t3kYE-WP3Yw
+                      - heading "“What if you encounter an aggressive dog on the street ... YouTube 강형욱의 보듬TV 2026. 2. 14." [level=3] [ref=e981]:
+                        - generic [ref=e984]: “What if you encounter an aggressive dog on the street ...
+                        - generic [ref=e986]:
+                          - generic [ref=e987]:
+                            - text: YouTube
+                            - generic [ref=e988]: · 강형욱의 보듬TV
+                          - generic [ref=e989]: 2026. 2. 14.
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - text: YouTube
+                              - generic: · 강형욱의 보듬TV
+                        - button "검색결과에 관한 정보" [ref=e990] [cursor=pointer]:
+                          - img [ref=e993]
+                  - button "강형욱의 보듬TV님이 YouTube에 게시한 “What if you encounter an aggressive dog on the street .... Google에서 재생. 13:09" [ref=e995] [cursor=pointer]:
+                    - generic [ref=e996]:
+                      - img [ref=e1002]
+                      - generic [ref=e1005]:
+                        - generic [ref=e1006]: 13:09
+                        - img [ref=e1009]
+                - button "이 동영상의 주요 순간 14개" [ref=e1015] [cursor=pointer]:
+                  - generic [ref=e1024]:
+                    - generic [ref=e1027]: 이 동영상의 주요 순간 14개
+                    - img [ref=e1029]
+              - generic [ref=e1035]:
+                - generic [ref=e1036]:
+                  - generic [ref=e1037]:
+                    - link "Is it because my headbanging won’t stop? T.T | Dog ... YouTube 강형욱의 보듬TV 2025. 12. 20." [ref=e1039] [cursor=pointer]:
+                      - /url: https://www.youtube.com/watch?v=C3sr_JXNq4k
+                      - heading "Is it because my headbanging won’t stop? T.T | Dog ... YouTube 강형욱의 보듬TV 2025. 12. 20." [level=3] [ref=e1040]:
+                        - generic [ref=e1043]: Is it because my headbanging won’t stop? T.T | Dog ...
+                        - generic [ref=e1045]:
+                          - generic [ref=e1046]:
+                            - text: YouTube
+                            - generic [ref=e1047]: · 강형욱의 보듬TV
+                          - generic [ref=e1048]: 2025. 12. 20.
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - text: YouTube
+                              - generic: · 강형욱의 보듬TV
+                        - button "검색결과에 관한 정보" [ref=e1049] [cursor=pointer]:
+                          - img [ref=e1052]
+                  - button "강형욱의 보듬TV님이 YouTube에 게시한 Is it because my headbanging won’t stop? T.T | Dog .... Google에서 재생. 8:56" [ref=e1054] [cursor=pointer]:
+                    - generic [ref=e1055]:
+                      - img [ref=e1058]
+                      - generic [ref=e1061]:
+                        - generic [ref=e1062]: 8:56
+                        - img [ref=e1065]
+                - button "이 동영상의 주요 순간 13개" [ref=e1071] [cursor=pointer]:
+                  - generic [ref=e1074]:
+                    - generic [ref=e1077]: 이 동영상의 주요 순간 13개
+                    - img [ref=e1079]
+              - generic [ref=e1087]:
+                - generic [ref=e1088]:
+                  - link "\"I've been a boarder for six months.\" A charming dog who ... YouTube EBS 세나개 x 고부해 - 왜그러냥? 귀엽개! 2025. 11. 16." [ref=e1090] [cursor=pointer]:
+                    - /url: https://www.youtube.com/watch?v=aBSXTeTQYZQ
+                    - heading "\"I've been a boarder for six months.\" A charming dog who ... YouTube EBS 세나개 x 고부해 - 왜그러냥? 귀엽개! 2025. 11. 16." [level=3] [ref=e1091]:
+                      - generic [ref=e1094]: "\"I've been a boarder for six months.\" A charming dog who ..."
+                      - generic [ref=e1096]:
+                        - generic [ref=e1097]:
+                          - text: YouTube
+                          - generic [ref=e1098]: · EBS 세나개 x 고부해 - 왜그러냥? 귀엽개!
+                        - generic [ref=e1099]: 2025. 11. 16.
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - text: YouTube
+                            - generic: · EBS 세나개 x 고부해 - 왜그러냥? 귀엽개!
+                      - button "검색결과에 관한 정보" [ref=e1100] [cursor=pointer]:
+                        - img [ref=e1103]
+                - button "EBS 세나개 x 고부해 - 왜그러냥? 귀엽개!님이 YouTube에 게시한 \"I've been a boarder for six months.\" A charming dog who .... Google에서 재생. 41:16" [ref=e1105] [cursor=pointer]:
+                  - generic [ref=e1106]:
+                    - img [ref=e1112]
+                    - generic [ref=e1115]:
+                      - generic [ref=e1116]: 41:16
+                      - img [ref=e1119]
+            - link "모든 동영상 보기" [ref=e1123] [cursor=pointer]:
+              - /url: /search?sca_esv=9e41d14960bf2fa8&udm=7&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&q=dog&sa=X&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ8ccDKAJ6BAhKEAQ
+              - separator [ref=e1124]
+              - generic [ref=e1125]:
+                - generic [ref=e1126]: 모두 보기
+                - img [ref=e1128]
+          - generic [ref=e1132]:
+            - heading "Web results" [level=2] [ref=e1133]
+            - generic [ref=e1134]:
+              - generic [ref=e1137]:
+                - link "Dog (2022) IMDb https://www.imdb.com › title" [ref=e1139] [cursor=pointer]:
+                  - /url: https://www.imdb.com/title/tt11252248/
+                  - heading "Dog (2022)" [level=3] [ref=e1140]
+                  - generic [ref=e1145]:
+                    - generic [ref=e1147]: IMDb
+                    - generic [ref=e1149]: https://www.imdb.com › title
+                - button "검색결과에 관한 정보" [ref=e1150] [cursor=pointer]:
+                  - img [ref=e1153]
+              - generic [ref=e1157]:
+                - emphasis [ref=e1158]: Two hard-charging former Army Rangers paired against their will
+                - text: ", Briggs and a Belgian Malinois named Lulu, race down the Pacific Coast."
+              - 'link "dog(출처: www.imdb.com)" [ref=e1161] [cursor=pointer]':
+                - /url: https://www.imdb.com/title/tt11252248/
+                - 'img "dog(출처: www.imdb.com)" [ref=e1163]'
+              - img "별 5개 중 3.0개 사용자 리뷰 (52,338)개" [ref=e1168]:
+                - text: 6.5/10
+                - img [ref=e1169]
+                - text: (52,338)
+          - generic [ref=e1175]:
+            - generic [ref=e1178]:
+              - link "Dog Wikipedia https://en.wikipedia.org › wiki › Dog" [ref=e1180] [cursor=pointer]:
+                - /url: https://en.wikipedia.org/wiki/Dog
+                - heading "Dog" [level=3] [ref=e1181]
+                - generic [ref=e1186]:
+                  - generic [ref=e1188]: Wikipedia
+                  - generic [ref=e1190]: https://en.wikipedia.org › wiki › Dog
+              - button "검색결과에 관한 정보" [ref=e1191] [cursor=pointer]:
+                - img [ref=e1194]
+            - generic [ref=e1198]:
+              - text: The dog (Canis familiaris or Canis lupus familiaris) is
+              - emphasis [ref=e1199]: a domesticated descendant of wolves
+              - text: . Also called the domestic dog, it was selectively bred during the ...
+            - 'link "dog(출처: en.wikipedia.org)" [ref=e1202] [cursor=pointer]':
+              - /url: https://en.wikipedia.org/wiki/Dog
+              - 'img "dog(출처: en.wikipedia.org)" [ref=e1204]'
+          - generic [ref=e1208]:
+            - generic [ref=e1211]:
+              - link "영어로 dog의 뜻 Cambridge Dictionary https://dictionary.cambridge.org › 사전 › 영어 › dog" [ref=e1213] [cursor=pointer]:
+                - /url: https://dictionary.cambridge.org/ko/%EC%82%AC%EC%A0%84/%EC%98%81%EC%96%B4/dog
+                - heading "영어로 dog의 뜻" [level=3] [ref=e1214]
+                - generic [ref=e1219]:
+                  - generic [ref=e1221]: Cambridge Dictionary
+                  - generic [ref=e1223]: https://dictionary.cambridge.org › 사전 › 영어 › dog
+              - button "검색결과에 관한 정보" [ref=e1224] [cursor=pointer]:
+                - img [ref=e1227]
+            - generic [ref=e1231]:
+              - text: dog noun [C] (PERSON). slang.
+              - emphasis [ref=e1232]: a man who is unpleasant or not to be trusted
+              - text: ": dirty dog He tried to steal my money, the dirty dog."
+            - 'link "dog(출처: dictionary.cambridge.org)" [ref=e1235] [cursor=pointer]':
+              - /url: https://dictionary.cambridge.org/ko/%EC%82%AC%EC%A0%84/%EC%98%81%EC%96%B4/dog
+              - 'img "dog(출처: dictionary.cambridge.org)" [ref=e1237]'
+          - generic [ref=e1241]:
+            - generic [ref=e1244]:
+              - link "도그TV 도그TV https://thedogtv.com" [ref=e1246] [cursor=pointer]:
+                - /url: https://thedogtv.com/
+                - heading "도그TV" [level=3] [ref=e1247]
+                - generic [ref=e1252]:
+                  - generic [ref=e1254]: 도그TV
+                  - generic [ref=e1256]: https://thedogtv.com
+              - button "검색결과에 관한 정보" [ref=e1257] [cursor=pointer]:
+                - img [ref=e1260]
+            - generic [ref=e1264]:
+              - emphasis [ref=e1265]: 반려동물에 최적화된 영상 콘텐츠를 제공
+              - text: 합니다. 주인이 일을 하거나, 외출 하느라 홀로 남겨진 시간에도. 도그티비와 함께라면 불안하거나 외롭지 않습니다. 더 많은 ...
+        - generic [ref=e1267]:
+          - generic [ref=e1272]:
+            - heading "관련 검색어" [level=2] [ref=e1274]
+            - generic [ref=e1276]:
+              - generic [ref=e1277]:
+                - link "Dog 3D" [ref=e1281] [cursor=pointer]:
+                  - /url: /search?sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&q=Dog+3D&sa=X&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ1QJ6BAhPEAE
+                  - generic [ref=e1282]:
+                    - generic [ref=e1287]: Dog 3D
+                    - img [ref=e1291]
+                - link "Dog 발음" [ref=e1296] [cursor=pointer]:
+                  - /url: /search?sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&q=Dog+%EB%B0%9C%EC%9D%8C&sa=X&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ1QJ6BAhVEAE
+                  - generic [ref=e1297]:
+                    - generic [ref=e1302]: Dog 발음
+                    - img [ref=e1306]
+                - link "Dog 뜻" [ref=e1311] [cursor=pointer]:
+                  - /url: /search?sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&q=Dog+%EB%9C%BB&sa=X&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ1QJ6BAhQEAE
+                  - generic [ref=e1312]:
+                    - generic [ref=e1317]: Dog 뜻
+                    - img [ref=e1321]
+                - link "Dog 크루" [ref=e1326] [cursor=pointer]:
+                  - /url: /search?sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&q=Dog+%ED%81%AC%EB%A3%A8&sa=X&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ1QJ6BAhUEAE
+                  - generic [ref=e1327]:
+                    - generic [ref=e1332]: Dog 크루
+                    - img [ref=e1336]
+              - generic [ref=e1338]:
+                - link "Dog 동사 뜻" [ref=e1342] [cursor=pointer]:
+                  - /url: /search?sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&q=Dog+%EB%8F%99%EC%82%AC+%EB%9C%BB&sa=X&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ1QJ6BAhSEAE
+                  - generic [ref=e1343]:
+                    - generic [ref=e1348]: Dog 동사 뜻
+                    - img [ref=e1352]
+                - link "Cute dog" [ref=e1357] [cursor=pointer]:
+                  - /url: /search?sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&q=Cute+dog&sa=X&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ1QJ6BAhTEAE
+                  - generic [ref=e1358]:
+                    - generic [ref=e1363]: Cute dog
+                    - img [ref=e1367]
+                - link "Dog jpg" [ref=e1372] [cursor=pointer]:
+                  - /url: /search?sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&q=Dog+jpg&sa=X&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ1QJ6BAhREAE
+                  - generic [ref=e1373]:
+                    - generic [ref=e1378]: Dog jpg
+                    - img [ref=e1382]
+                - link "Dogs" [ref=e1387] [cursor=pointer]:
+                  - /url: /search?sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&q=Dogs&sa=X&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ1QJ6BAhOEAE
+                  - generic [ref=e1388]:
+                    - generic [ref=e1393]: Dogs
+                    - img [ref=e1397]
+          - navigation [ref=e1399]:
+            - heading "페이지 탐색" [level=1] [ref=e1400]
+            - text: "1"
+            - link "Page 2" [ref=e1403] [cursor=pointer]:
+              - /url: /search?q=dog&sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&ei=x4T6aaDCD4-bvr0P0J-P4Ao&start=10&sa=N&sstk=Af77f_dbVl9qCaqvEQ7zPM1H3JQcAP1YBJsKPkrSpHabirczx9d9a3F2ug5ik7hDoZoRxVAzIyNPvU0ZF60O_oKU0vhnghFwlhZDNQ&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ8tMDegQIPRAE
+              - text: "2"
+            - link "Page 3" [ref=e1405] [cursor=pointer]:
+              - /url: /search?q=dog&sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&ei=x4T6aaDCD4-bvr0P0J-P4Ao&start=20&sa=N&sstk=Af77f_dbVl9qCaqvEQ7zPM1H3JQcAP1YBJsKPkrSpHabirczx9d9a3F2ug5ik7hDoZoRxVAzIyNPvU0ZF60O_oKU0vhnghFwlhZDNQ&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ8tMDegQIPRAG
+              - text: "3"
+            - link "Page 4" [ref=e1407] [cursor=pointer]:
+              - /url: /search?q=dog&sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&ei=x4T6aaDCD4-bvr0P0J-P4Ao&start=30&sa=N&sstk=Af77f_dbVl9qCaqvEQ7zPM1H3JQcAP1YBJsKPkrSpHabirczx9d9a3F2ug5ik7hDoZoRxVAzIyNPvU0ZF60O_oKU0vhnghFwlhZDNQ&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ8tMDegQIPRAI
+              - text: "4"
+            - link "Page 5" [ref=e1409] [cursor=pointer]:
+              - /url: /search?q=dog&sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&ei=x4T6aaDCD4-bvr0P0J-P4Ao&start=40&sa=N&sstk=Af77f_dbVl9qCaqvEQ7zPM1H3JQcAP1YBJsKPkrSpHabirczx9d9a3F2ug5ik7hDoZoRxVAzIyNPvU0ZF60O_oKU0vhnghFwlhZDNQ&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ8tMDegQIPRAK
+              - text: "5"
+            - link "Page 6" [ref=e1411] [cursor=pointer]:
+              - /url: /search?q=dog&sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&ei=x4T6aaDCD4-bvr0P0J-P4Ao&start=50&sa=N&sstk=Af77f_dbVl9qCaqvEQ7zPM1H3JQcAP1YBJsKPkrSpHabirczx9d9a3F2ug5ik7hDoZoRxVAzIyNPvU0ZF60O_oKU0vhnghFwlhZDNQ&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ8tMDegQIPRAM
+              - text: "6"
+            - link "Page 7" [ref=e1413] [cursor=pointer]:
+              - /url: /search?q=dog&sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&ei=x4T6aaDCD4-bvr0P0J-P4Ao&start=60&sa=N&sstk=Af77f_dbVl9qCaqvEQ7zPM1H3JQcAP1YBJsKPkrSpHabirczx9d9a3F2ug5ik7hDoZoRxVAzIyNPvU0ZF60O_oKU0vhnghFwlhZDNQ&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ8tMDegQIPRAO
+              - text: "7"
+            - link "Page 8" [ref=e1415] [cursor=pointer]:
+              - /url: /search?q=dog&sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&ei=x4T6aaDCD4-bvr0P0J-P4Ao&start=70&sa=N&sstk=Af77f_dbVl9qCaqvEQ7zPM1H3JQcAP1YBJsKPkrSpHabirczx9d9a3F2ug5ik7hDoZoRxVAzIyNPvU0ZF60O_oKU0vhnghFwlhZDNQ&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ8tMDegQIPRAQ
+              - text: "8"
+            - link "Page 9" [ref=e1417] [cursor=pointer]:
+              - /url: /search?q=dog&sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&ei=x4T6aaDCD4-bvr0P0J-P4Ao&start=80&sa=N&sstk=Af77f_dbVl9qCaqvEQ7zPM1H3JQcAP1YBJsKPkrSpHabirczx9d9a3F2ug5ik7hDoZoRxVAzIyNPvU0ZF60O_oKU0vhnghFwlhZDNQ&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ8tMDegQIPRAS
+              - text: "9"
+            - link "Page 10" [ref=e1419] [cursor=pointer]:
+              - /url: /search?q=dog&sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&ei=x4T6aaDCD4-bvr0P0J-P4Ao&start=90&sa=N&sstk=Af77f_dbVl9qCaqvEQ7zPM1H3JQcAP1YBJsKPkrSpHabirczx9d9a3F2ug5ik7hDoZoRxVAzIyNPvU0ZF60O_oKU0vhnghFwlhZDNQ&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ8tMDegQIPRAU
+              - text: "10"
+            - heading "다음" [level=2] [ref=e1421]:
+              - link "다음" [ref=e1422] [cursor=pointer]:
+                - /url: /search?q=dog&sca_esv=9e41d14960bf2fa8&sxsrf=ANbL-n4RT2dGzGV4x7YBGzJzLZ-6n0kvVw:1778025671259&ei=x4T6aaDCD4-bvr0P0J-P4Ao&start=10&sa=N&sstk=Af77f_dbVl9qCaqvEQ7zPM1H3JQcAP1YBJsKPkrSpHabirczx9d9a3F2ug5ik7hDoZoRxVAzIyNPvU0ZF60O_oKU0vhnghFwlhZDNQ&ved=2ahUKEwjgwaXkraOUAxWPja8BHdDPA6wQ8NMDegQIPRAW
+                - generic [ref=e1424]: 다음
+        - navigation
+    - contentinfo [ref=e1425]:
+      - heading "바닥글 링크" [level=1] [ref=e1426]
+      - generic [ref=e1430]:
+        - generic [ref=e1434]: 검색 결과가 맞춤설정되지 않았습니다.
+        - generic [ref=e1436]:
+          - text: 대한민국
+          - generic [ref=e1438]:
+            - button "갈현동 경기도 과천시 - IP 주소 기반" [ref=e1440] [cursor=pointer]:
+              - generic [ref=e1441]: 갈현동 경기도 과천시
+              - generic [ref=e1443]:
+                - text: "-"
+                - generic [ref=e1444]: IP 주소 기반
+            - text: "-"
+            - button "위치 업데이트" [ref=e1446] [cursor=pointer]: 위치 업데이트
+        - generic [ref=e1449]:
+          - link "도움말" [ref=e1450] [cursor=pointer]:
+            - /url: https://support.google.com/websearch/?p=ws_results_help&hl=ko&fg=1
+          - link "의견 보내기" [ref=e1451] [cursor=pointer]:
+            - /url: "#"
+          - link "개인정보처리방침" [ref=e1452] [cursor=pointer]:
+            - /url: https://policies.google.com/privacy?hl=ko&fg=1
+          - link "약관" [ref=e1453] [cursor=pointer]:
+            - /url: https://policies.google.com/terms?hl=ko&fg=1

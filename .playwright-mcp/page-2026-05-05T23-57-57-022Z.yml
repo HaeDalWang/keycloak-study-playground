@@ -1,0 +1,60 @@
+- generic [ref=e2]:
+  - navigation [ref=e3]:
+    - link "Google 정보" [ref=e4] [cursor=pointer]:
+      - /url: https://about.google/?fg=1&utm_source=google-KR&utm_medium=referral&utm_campaign=hp-header
+    - link "스토어" [ref=e5] [cursor=pointer]:
+      - /url: https://store.google.com/KR?utm_source=hp_header&utm_medium=google_ooo&utm_campaign=GS100042&hl=ko-KR
+    - generic [ref=e8]:
+      - generic [ref=e9]:
+        - link "Gmail" [ref=e11] [cursor=pointer]:
+          - /url: https://mail.google.com/mail/&ogbl
+        - link "이미지 검색" [ref=e13] [cursor=pointer]:
+          - /url: https://www.google.com/imghp?hl=ko&ogbl
+          - text: 이미지
+      - link "Search Labs" [ref=e16] [cursor=pointer]:
+        - /url: https://labs.google.com/search?source=hp
+        - img [ref=e17]
+      - button "Google 앱" [ref=e21] [cursor=pointer]:
+        - img [ref=e22]
+      - 'button "Google 계정: BaeSeungDo (svvwac98@gmail.com)" [ref=e26] [cursor=pointer]':
+        - img [ref=e28]
+        - img [ref=e33]
+  - img "Google" [ref=e36]
+  - search [ref=e39]:
+    - generic [ref=e41]:
+      - generic [ref=e43]:
+        - button "파일 또는 이미지 업로드" [ref=e45] [cursor=pointer]:
+          - img [ref=e47]
+        - combobox "검색" [active] [ref=e50]
+        - generic [ref=e51]:
+          - generic [ref=e52]:
+            - button "입력 도구" [ref=e53] [cursor=pointer]:
+              - img [ref=e55]
+            - button "음성 검색" [ref=e57] [cursor=pointer]:
+              - img [ref=e58]
+            - button "이미지로 검색" [ref=e60] [cursor=pointer]:
+              - img [ref=e61]
+          - link "AI 모드" [ref=e63] [cursor=pointer]:
+            - generic [ref=e65]:
+              - img [ref=e67]
+              - generic [ref=e74]: AI 모드
+      - generic [ref=e76]:
+        - button "Google 검색" [ref=e77] [cursor=pointer]
+        - button "I’m Feeling Lucky" [ref=e78] [cursor=pointer]
+  - contentinfo [ref=e81]:
+    - generic [ref=e82]: 대한민국
+    - generic [ref=e83]:
+      - generic [ref=e84]:
+        - link "광고" [ref=e85] [cursor=pointer]:
+          - /url: https://www.google.com/intl/ko_kr/ads/?subid=ww-ww-et-g-awa-a-g_hpafoot1_1!o2&utm_source=google.com&utm_medium=referral&utm_campaign=google_hpafooter&fg=1
+        - link "비즈니스" [ref=e86] [cursor=pointer]:
+          - /url: https://www.google.com/services/?subid=ww-ww-et-g-awa-a-g_hpbfoot1_1!o2&utm_source=google.com&utm_medium=referral&utm_campaign=google_hpbfooter&fg=1
+        - link "검색의 원리" [ref=e87] [cursor=pointer]:
+          - /url: https://google.com/search/howsearchworks/?fg=1
+      - generic [ref=e88]:
+        - link "개인정보처리방침" [ref=e89] [cursor=pointer]:
+          - /url: https://policies.google.com/privacy?hl=ko&fg=1
+        - link "약관" [ref=e90] [cursor=pointer]:
+          - /url: https://policies.google.com/terms?hl=ko&fg=1
+        - button "설정" [ref=e94] [cursor=pointer]:
+          - generic [ref=e95]: 설정
