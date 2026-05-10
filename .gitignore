@@ -16,6 +16,10 @@ terraform/*-prod.json
 *.crt
 *.p12
 .env
+*.log
 
 # OS
 .DS_Store
+
+# images
+*.png
