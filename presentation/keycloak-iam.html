@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keycloak과 IAM</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#fff;font-family:'Space Grotesk',sans-serif;color:#111827}
+:root{
+  --blue:#1a56db;
+  --blue-light:#eff6ff;
+  --gray:#6b7280;
+  --border:#e5e7eb;
+  --title:clamp(2.2rem,4.5vw,3.8rem);
+  --h2:clamp(1.8rem,3.5vw,3rem);
+  --h3:clamp(1.2rem,2vw,1.6rem);
+  --body:clamp(1.1rem,1.8vw,1.4rem);
+  --small:clamp(0.9rem,1.4vw,1.1rem);
+  --pad:clamp(2rem,6vw,6rem);
+}
+.deck{width:100vw;height:100vh;position:relative;overflow:hidden}
+.slide{
+  position:absolute;inset:0;
+  width:100vw;height:100vh;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:var(--pad);
+  opacity:0;transform:translateY(24px);
+  transition:opacity .45s ease,transform .45s ease;
+  pointer-events:none;
+}
+.slide.active{opacity:1;transform:translateY(0);pointer-events:all}
+
+/* top accent line */
+.slide::after{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--blue)}
+
+h1{font-size:var(--title);font-weight:700;line-height:1.1;letter-spacing:-.02em}
+h2{font-size:var(--h2);font-weight:700;line-height:1.15;margin-bottom:clamp(1rem,3vh,2.5rem)}
+h3{font-size:var(--h3);font-weight:600;line-height:1.3}
+.blue{color:var(--blue)}
+.gray{color:var(--gray)}
+.mono{font-family:'JetBrains Mono',monospace}
+
+.label{
+  display:inline-block;font-family:'JetBrains Mono',monospace;
+  font-size:var(--small);color:var(--blue);
+  border:1.5px solid var(--blue);border-radius:3px;
+  padding:.2em .7em;letter-spacing:.08em;
+  margin-bottom:clamp(.8rem,2vh,1.8rem);
+}
+
+ul.bullets{list-style:none;display:flex;flex-direction:column;gap:clamp(.6rem,1.5vh,1.2rem)}
+ul.bullets li{font-size:var(--body);padding-left:1.5em;position:relative;line-height:1.5}
+ul.bullets li::before{content:'—';position:absolute;left:0;color:var(--blue);font-weight:700}
+
+.callout{
+  margin-top:clamp(1.2rem,3vh,2.5rem);
+  padding:clamp(.8rem,2vh,1.5rem) clamp(1rem,2.5vw,2rem);
+  border-left:4px solid var(--blue);
+  background:var(--blue-light);
+  font-size:var(--body);font-weight:600;line-height:1.5;
+}
+
+.next{
+  margin-top:clamp(1rem,2.5vh,2rem);
+  font-family:'JetBrains Mono',monospace;
+  font-size:var(--small);color:var(--gray);
+}
+.next span{color:var(--blue)}
+
+/* two-col */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1rem,3vw,3rem);margin-top:clamp(.8rem,2vh,2rem)}
+.col-card{padding:clamp(1rem,2.5vw,2rem);border:1.5px solid var(--border);border-radius:8px}
+.col-card h3{color:var(--blue);margin-bottom:.6em}
+.col-card p,.col-card li{font-size:var(--body);line-height:1.6;color:#374151}
+.col-card ul{list-style:none;padding:0}
+.col-card ul li{padding-left:1.2em;position:relative}
+.col-card ul li::before{content:'·';position:absolute;left:0;color:var(--blue);font-weight:700}
+
+/* grid cards */
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.6rem,1.5vw,1.2rem);margin-top:clamp(.8rem,2vh,2rem)}
+.card{padding:clamp(.8rem,2vw,1.5rem);border:1.5px solid var(--border);border-radius:8px}
+.card h3{font-size:var(--small);color:var(--blue);font-family:'JetBrains Mono',monospace;letter-spacing:.05em;margin-bottom:.4em}
+.card p{font-size:var(--small);color:#374151;line-height:1.5}
+
+/* table */
+.proto-table{width:100%;border-collapse:collapse;margin-top:clamp(.8rem,2vh,2rem);font-size:var(--body)}
+.proto-table th{text-align:left;padding:.7em 1em;font-family:'JetBrains Mono',monospace;font-size:var(--small);letter-spacing:.08em;border-bottom:2px solid var(--border)}
+.proto-table th.h-oidc{color:var(--blue)}
+.proto-table th.h-saml{color:#dc2626}
+.proto-table td{padding:.7em 1em;border-bottom:1px solid var(--border);line-height:1.5}
+.proto-table td:first-child{color:var(--gray);font-family:'JetBrains Mono',monospace;font-size:var(--small)}
+
+/* scenario */
+.scenario-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(.6rem,1.5vw,1.2rem);margin-top:clamp(.8rem,2vh,2rem)}
+.sc{padding:clamp(.8rem,2vw,1.5rem);border:1.5px solid var(--border);border-radius:8px}
+.sc .req{font-size:var(--small);color:var(--gray);margin-bottom:.5em;line-height:1.5}
+.sc .req::before{content:'"';color:var(--blue)}
+.sc .req::after{content:'"';color:var(--blue)}
+.sc .sol{font-family:'JetBrains Mono',monospace;font-size:var(--small);color:var(--blue)}
+.sc .sol::before{content:'→ ';color:var(--gray)}
+
+/* flow */
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;margin:clamp(1rem,2.5vh,2.5rem) 0}
+.fi{font-family:'JetBrains Mono',monospace;font-size:var(--small);padding:.3em .9em;border:1.5px solid var(--border);border-radius:4px}
+.fi.hi{border-color:var(--blue);color:var(--blue);font-weight:700}
+.fa{color:var(--blue);font-weight:700}
+
+/* hierarchy */
+.hier{display:flex;flex-direction:column;gap:.5rem;margin-top:clamp(.8rem,2vh,2rem)}
+.hier-row{display:flex;align-items:center;gap:.8rem}
+.hier-indent{width:clamp(1rem,2vw,2rem);height:1.5px;background:var(--border);flex-shrink:0}
+.hier-tag{font-family:'JetBrains Mono',monospace;font-size:var(--small);padding:.25em .8em;border-radius:3px;font-weight:700}
+.ht-realm{background:#eff6ff;color:var(--blue)}
+.ht-client{background:#f0fdf4;color:#16a34a}
+.ht-role{background:#fef3c7;color:#d97706}
+.ht-group{background:#fdf4ff;color:#9333ea}
+.ht-user{background:#fff1f2;color:#e11d48}
+.hier-desc{font-size:var(--small);color:var(--gray)}
+
+/* outcomes */
+.outcomes{display:flex;gap:clamp(1rem,3vw,3rem);margin-top:clamp(1rem,2.5vh,2.5rem);flex-wrap:wrap}
+.oc{display:flex;align-items:center;gap:.6rem;font-size:var(--body);font-weight:600}
+.oc-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* progress + counter */
+.progress{position:fixed;bottom:0;left:0;height:3px;background:var(--blue);transition:width .4s ease;z-index:100}
+.counter{position:fixed;bottom:clamp(.8rem,2vh,1.5rem);right:clamp(1rem,3vw,2.5rem);font-family:'JetBrains Mono',monospace;font-size:var(--small);color:var(--gray);z-index:100}
+.counter .cur{color:var(--blue);font-weight:700}
+.hint{position:fixed;bottom:clamp(.8rem,2vh,1.5rem);left:clamp(1rem,3vw,2.5rem);font-family:'JetBrains Mono',monospace;font-size:var(--small);color:#d1d5db;z-index:100}
+
+/* title slide */
+.title-slide{background:#fff}
+.title-slide .eyebrow{font-family:'JetBrains Mono',monospace;font-size:var(--small);color:var(--blue);letter-spacing:.15em;margin-bottom:clamp(1rem,2.5vh,2.5rem)}
+.title-slide h1{margin-bottom:clamp(.6rem,1.5vh,1.5rem)}
+.title-slide .sub{font-size:var(--h3);color:var(--gray);font-weight:400;margin-bottom:clamp(2rem,5vh,5rem);max-width:55ch;line-height:1.5}
+.title-slide .presenter{font-family:'JetBrains Mono',monospace;font-size:var(--small);color:var(--gray)}
+.title-slide .presenter span{color:#111827;font-weight:600}
+
+@media(prefers-reduced-motion:reduce){.slide,.progress{transition:none}}
+@media(max-height:600px){.hint{display:none}}
+
+/* image slides */
+.img-layout{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,4vw,4rem);align-items:center;height:100%}
+.img-layout .text-side{display:flex;flex-direction:column;justify-content:center}
+.img-layout .img-side{display:flex;align-items:center;justify-content:center;height:100%}
+.img-layout .img-side img{width:100%;max-height:min(55vh,480px);object-fit:cover;border-radius:8px;border:1.5px solid var(--border)}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- 1. TITLE -->
+<section class="slide title-slide active" data-i="0">
+  <div class="eyebrow">TECH SHARING · CSG · 2026</div>
+  <h1>Keycloak<br><span class="blue">과</span> IAM</h1>
+  <div class="presenter">발표자 <span>배승도</span> </div>
+</section>
+
+<!-- 2. PROBLEM -->
+<section class="slide" data-i="1">
+  <div class="img-layout">
+    <div class="text-side">
+      <div class="label">01 · PROBLEM</div>
+      <h2>우리가 겪는 <span class="blue">문제</span></h2>
+      <ul class="bullets">
+        <li>직원 200명 × 사내 시스템 8개 = <strong>계정 1,600개</strong></li>
+        <li>퇴사자 처리 누락 → 6개월 후에도 HR 시스템 접근 가능</li>
+        <li>직원은 비밀번호 8개를 외워야 함 → 생산성 저하, 보안 사고</li>
+        <li>IT 헬프데스크 문의의 40%가 비밀번호 재설정</li>
+      </ul>
+      <div class="callout">이걸 한 번에 해결하는 방법이 있습니다</div>
+    </div>
+    <div class="img-side">
+      <svg viewBox="0 0 260 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:min(52vh,380px)">
+        <!-- 사람 (왼쪽) -->
+        <circle cx="46" cy="36" r="18" fill="#eff6ff" stroke="#1a56db" stroke-width="2"/>
+        <circle cx="46" cy="36" r="10" fill="#1a56db"/>
+        <path d="M22 70 Q22 54 46 54 Q70 54 70 70" fill="#1a56db" opacity=".7"/>
+        <text x="46" y="86" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="#6b7280">직원</text>
+        <!-- 비밀번호 8개 배지 -->
+        <rect x="14" y="96" width="64" height="20" rx="4" fill="#dc2626"/>
+        <text x="46" y="110" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#fff">PW x 8개</text>
+
+        <!-- 화살표 -->
+        <line x1="80" y1="108" x2="108" y2="108" stroke="#dc2626" stroke-width="2"/>
+        <polygon points="104,103 112,108 104,113" fill="#dc2626"/>
+
+        <!-- 시스템 목록 (오른쪽, 세로 배치) -->
+        <rect x="112" y="20" width="130" height="26" rx="5" fill="#fff" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="177" y="37" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#374151">HR 시스템</text>
+
+        <rect x="112" y="54" width="130" height="26" rx="5" fill="#fff" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="177" y="71" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#374151">사내 포털</text>
+
+        <rect x="112" y="88" width="130" height="26" rx="5" fill="#fff" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="177" y="105" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#374151">결재 시스템</text>
+
+        <rect x="112" y="122" width="130" height="26" rx="5" fill="#fff" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="177" y="139" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#374151">메일 시스템</text>
+
+        <rect x="112" y="156" width="130" height="26" rx="5" fill="#fff" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="177" y="173" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#374151">코드 저장소</text>
+
+        <rect x="112" y="190" width="130" height="26" rx="5" fill="#fff" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="177" y="207" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#374151">ERP</text>
+
+        <!-- 각 시스템에 자물쇠 표시 (작은 빨간 원) -->
+        <circle cx="116" cy="33" r="6" fill="#dc2626"/>
+        <text x="116" y="37" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#fff">!</text>
+        <circle cx="116" cy="67" r="6" fill="#dc2626"/>
+        <text x="116" y="71" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#fff">!</text>
+        <circle cx="116" cy="101" r="6" fill="#dc2626"/>
+        <text x="116" y="105" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#fff">!</text>
+        <circle cx="116" cy="135" r="6" fill="#dc2626"/>
+        <text x="116" y="139" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#fff">!</text>
+        <circle cx="116" cy="169" r="6" fill="#dc2626"/>
+        <text x="116" y="173" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#fff">!</text>
+        <circle cx="116" cy="203" r="6" fill="#dc2626"/>
+        <text x="116" y="207" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#fff">!</text>
+
+        <!-- 하단 요약 -->
+        <line x1="14" y1="224" x2="246" y2="224" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="130" y="237" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#dc2626" font-weight="600">계정 200명 × 8개 = 1,600개 관리</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 3. IAM -->
+<section class="slide" data-i="2">
+  <div class="img-layout">
+    <div class="text-side">
+      <div class="label">02 · CONCEPT</div>
+      <h2>IAM <span class="blue">(Identity and Access Management)</span></h2>
+      <ul class="bullets">
+        <li><strong>"누가, 무엇에, 어떻게 접근할 수 있는지 관리하는 체계"</strong></li>
+        <li>Identity: 당신이 누구인지 → 인증 (Authentication)</li>
+        <li>Access: 무엇을 할 수 있는지 → 인가 (Authorization)</li>
+        <li>AWS IAM을 이미 쓰고 있다면 — 그게 IAM이다</li>
+      </ul>
+      <p class="next">→ <span>인증과 인가, 어떻게 다른가?</span></p>
+    </div>
+    <div class="img-side">
+      <svg viewBox="0 0 260 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:min(52vh,380px)">
+        <!-- 사람 (왼쪽) -->
+        <circle cx="46" cy="36" r="18" fill="#eff6ff" stroke="#1a56db" stroke-width="2"/>
+        <circle cx="46" cy="36" r="10" fill="#1a56db"/>
+        <path d="M22 70 Q22 54 46 54 Q70 54 70 70" fill="#1a56db" opacity=".7"/>
+        <text x="46" y="86" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="#6b7280">사용자</text>
+
+        <!-- IAM 박스 (중앙) -->
+        <rect x="96" y="20" width="80" height="52" rx="8" fill="#1a56db"/>
+        <text x="136" y="42" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700" fill="#fff">IAM</text>
+        <text x="136" y="58" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#bfdbfe">누가·무엇에·어떻게</text>
+        <text x="136" y="68" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#bfdbfe">접근할 수 있는지</text>
+
+        <!-- 사람 → IAM -->
+        <line x1="70" y1="44" x2="94" y2="44" stroke="#1a56db" stroke-width="2"/>
+        <polygon points="90,39 96,44 90,49" fill="#1a56db"/>
+
+        <!-- IAM → 리소스 (수직 배치) -->
+        <line x1="176" y1="30" x2="196" y2="30" stroke="#16a34a" stroke-width="1.5"/>
+        <polygon points="192,25 198,30 192,35" fill="#16a34a"/>
+        <line x1="176" y1="46" x2="196" y2="64" stroke="#16a34a" stroke-width="1.5"/>
+        <polygon points="192,60 198,66 192,70" fill="#16a34a"/>
+        <line x1="176" y1="62" x2="196" y2="98" stroke="#16a34a" stroke-width="1.5"/>
+        <polygon points="192,94 198,100 192,104" fill="#16a34a"/>
+
+        <!-- 리소스 박스 3개 -->
+        <rect x="198" y="18" width="56" height="24" rx="5" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="226" y="34" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#16a34a">HR 시스템</text>
+        <rect x="198" y="52" width="56" height="24" rx="5" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="226" y="68" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#16a34a">사내 포털</text>
+        <rect x="198" y="86" width="56" height="24" rx="5" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="226" y="102" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#16a34a">결재 시스템</text>
+
+        <!-- 구분선 -->
+        <line x1="14" y1="122" x2="246" y2="122" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="3,3"/>
+
+        <!-- 하단: Identity vs Access 두 박스 -->
+        <rect x="14" y="132" width="108" height="80" rx="6" fill="#eff6ff" stroke="#1a56db" stroke-width="1.5"/>
+        <text x="68" y="152" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="#1a56db">Identity</text>
+        <text x="68" y="168" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#374151">당신이 누구인지</text>
+        <text x="68" y="182" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#1a56db">→ 인증 (AuthN)</text>
+        <text x="68" y="196" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#6b7280">로그인 · 비밀번호 · OTP</text>
+        <text x="68" y="208" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#6b7280">지문 · 보안키</text>
+
+        <rect x="138" y="132" width="108" height="80" rx="6" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="192" y="152" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="#16a34a">Access</text>
+        <text x="192" y="168" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#374151">무엇을 할 수 있는지</text>
+        <text x="192" y="182" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#16a34a">→ 인가 (AuthZ)</text>
+        <text x="192" y="196" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#6b7280">권한 · 역할 · 정책</text>
+        <text x="192" y="208" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#6b7280">팀장만 결재 가능</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 4. AuthN vs AuthZ -->
+<section class="slide" data-i="3">
+  <div class="label">03 · CONCEPT</div>
+  <h2>인증 <span class="blue">vs</span> 인가</h2>
+  <div style="display:flex;align-items:center;gap:clamp(1.5rem,4vw,4rem)">
+    <div style="flex:1">
+      <svg viewBox="0 0 320 230" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:min(42vh,300px)">
+  <!-- 인증: 사람 + 열쇠 -->
+  <g transform="translate(40,10)">
+    <!-- 사람 실루엣 -->
+    <circle cx="60" cy="28" r="18" fill="#1a56db" opacity=".15" stroke="#1a56db" stroke-width="2"/>
+    <circle cx="60" cy="28" r="10" fill="#1a56db"/>
+    <path d="M30 85 Q30 58 60 58 Q90 58 90 85" fill="#1a56db" opacity=".8"/>
+    <!-- 열쇠 -->
+    <circle cx="60" cy="122" r="14" fill="none" stroke="#1a56db" stroke-width="3"/>
+    <line x1="74" y1="122" x2="100" y2="122" stroke="#1a56db" stroke-width="3" stroke-linecap="round"/>
+    <line x1="92" y1="122" x2="92" y2="134" stroke="#1a56db" stroke-width="3" stroke-linecap="round"/>
+    <line x1="100" y1="122" x2="100" y2="134" stroke="#1a56db" stroke-width="3" stroke-linecap="round"/>
+    <!-- 라벨 -->
+    <text x="60" y="165" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="13" font-weight="600" fill="#1a56db">인증 (AuthN)</text>
+    <text x="60" y="181" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="11" fill="#6b7280">신원 확인</text>
+  </g>
+  <!-- 구분선 -->
+  <line x1="160" y1="10" x2="160" y2="220" stroke="#e5e7eb" stroke-width="1.5" stroke-dasharray="4,4"/>
+  <!-- 인가: 문 + 체크/X -->
+  <g transform="translate(175,10)">
+    <!-- 문 -->
+    <rect x="30" y="18" width="60" height="86" rx="4" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+    <circle cx="82" cy="61" r="4" fill="#16a34a"/>
+    <!-- 체크 (허용) -->
+    <circle cx="30" cy="132" r="14" fill="#16a34a" opacity=".15" stroke="#16a34a" stroke-width="2"/>
+    <polyline points="22,132 28,139 38,125" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="30" y="157" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="#16a34a">허용</text>
+    <!-- X (거부) -->
+    <circle cx="90" cy="132" r="14" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+    <line x1="83" y1="125" x2="97" y2="139" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="97" y1="125" x2="83" y2="139" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
+    <text x="90" y="157" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="#dc2626">거부</text>
+    <!-- 라벨 -->
+    <text x="60" y="178" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="13" font-weight="600" fill="#16a34a">인가 (AuthZ)</text>
+    <text x="60" y="194" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="11" fill="#6b7280">권한 확인</text>
+  </g>
+</svg>
+    </div>
+    <div style="flex:1">
+      <div class="two-col" style="grid-template-columns:1fr;gap:clamp(.8rem,2vh,1.5rem)">
+    <div class="col-card">
+      <h3>인증 (Authentication)</h3>
+      <p>"당신이 누구인지 확인"</p>
+      <ul style="margin-top:.8em">
+        <li>로그인</li>
+        <li>비밀번호, 지문, OTP</li>
+        <li>신분증 확인</li>
+      </ul>
+    </div>
+    <div class="col-card">
+      <h3>인가 (Authorization)</h3>
+      <p>"무엇을 할 수 있는지 확인"</p>
+      <ul style="margin-top:.8em">
+        <li>권한 체크</li>
+        <li>팀장만 결재 가능</li>
+        <li>개발팀만 코드 저장소 접근</li>
+      </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. RBAC -->
+<section class="slide" data-i="4">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,4vw,4rem);align-items:center;height:100%">
+    <div>
+      <div class="label">04 · CONCEPT</div>
+      <h2>RBAC <span class="blue">(Role-Based Access Control)</span></h2>
+      <ul class="bullets">
+    <li><strong>나쁜 방식:</strong> 사람에게 직접 권한 부여 → 300명이면 300번 설정</li>
+    <li><strong>좋은 방식:</strong> 역할(Role)에 권한 → 역할을 사람에게 할당</li>
+    <li>예시: ROLE_HR_ACCESS → 개발팀 그룹 → 김철수 자동 상속</li>
+    <li>인사이동 시 그룹만 바꾸면 권한 자동 변경</li>
+      </ul>
+      <p class="next">→ <span>이걸 여러 시스템에 한 번에 적용하려면?</span></p>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center">
+      <svg viewBox="0 0 300 195" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:min(42vh,300px)">
+  <!-- Role 박스 (중앙 상단) -->
+  <rect x="90" y="8" width="120" height="36" rx="6" fill="#eff6ff" stroke="#1a56db" stroke-width="2"/>
+  <text x="150" y="30" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" font-weight="700" fill="#1a56db">ROLE_HR_ACCESS</text>
+  <!-- 화살표 아래로 (Role → Group) -->
+  <line x1="150" y1="44" x2="150" y2="62" stroke="#1a56db" stroke-width="2"/>
+  <polygon points="144,58 150,68 156,58" fill="#1a56db"/>
+  <!-- Group 박스 -->
+  <rect x="90" y="68" width="120" height="36" rx="6" fill="#fdf4ff" stroke="#9333ea" stroke-width="2"/>
+  <text x="150" y="90" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" font-weight="700" fill="#9333ea">개발팀 (Group)</text>
+  <!-- 자동 상속 라벨 -->
+  <text x="230" y="88" font-family="Space Grotesk,sans-serif" font-size="9" fill="#9333ea" opacity=".7">자동 상속 ↓</text>
+  <!-- 연결선 Group → Users (부채꼴) -->
+  <line x1="150" y1="104" x2="30" y2="128" stroke="#9333ea" stroke-width="1.5" opacity=".45"/>
+  <line x1="150" y1="104" x2="90" y2="128" stroke="#9333ea" stroke-width="1.5" opacity=".45"/>
+  <line x1="150" y1="104" x2="150" y2="128" stroke="#9333ea" stroke-width="1.5" opacity=".45"/>
+  <line x1="150" y1="104" x2="210" y2="128" stroke="#9333ea" stroke-width="1.5" opacity=".45"/>
+  <!-- 사람들 (User) -->
+  <g transform="translate(30,116)">
+    <circle cx="0" cy="12" r="10" fill="#fff1f2" stroke="#e11d48" stroke-width="2"/>
+    <text x="0" y="16" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#e11d48">김</text>
+    <text x="0" y="32" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#6b7280">김철수</text>
+  </g>
+  <g transform="translate(90,116)">
+    <circle cx="0" cy="12" r="10" fill="#fff1f2" stroke="#e11d48" stroke-width="2"/>
+    <text x="0" y="16" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#e11d48">이</text>
+    <text x="0" y="32" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#6b7280">이영희</text>
+  </g>
+  <g transform="translate(150,116)">
+    <circle cx="0" cy="12" r="10" fill="#fff1f2" stroke="#e11d48" stroke-width="2"/>
+    <text x="0" y="16" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#e11d48">박</text>
+    <text x="0" y="32" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#6b7280">박민준</text>
+  </g>
+  <g transform="translate(210,116)">
+    <circle cx="0" cy="12" r="10" fill="#fff1f2" stroke="#e11d48" stroke-width="2"/>
+    <text x="0" y="16" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#e11d48">최</text>
+    <text x="0" y="32" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#6b7280">최준호</text>
+  </g>
+</svg>
+    </div>
+  </div>
+</section>
+
+<!-- 6. SSO -->
+<section class="slide" data-i="5">
+  <div class="img-layout">
+    <div class="text-side">
+      <div class="label">05 · CONCEPT</div>
+      <h2>SSO <span class="blue">(Single Sign-On)</span></h2>
+      <ul class="bullets">
+        <li><strong>한 번 로그인 → 모든 시스템 접근</strong></li>
+        <li>퇴사 처리: 계정 1개 비활성화 → 전체 시스템 즉시 차단</li>
+        <li>직원 생산성 향상, IT 운영 비용 절감</li>
+        <li>비밀번호는 한 곳에서만 관리</li>
+      </ul>
+      <p class="next">→ <span>그러면 이 SSO를 누가 처리해주는가?</span></p>
+    </div>
+    <div class="img-side">
+      <svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:min(52vh,380px)">
+        <!-- 사람 (왼쪽) -->
+        <circle cx="44" cy="46" r="20" fill="#eff6ff" stroke="#1a56db" stroke-width="2"/>
+        <circle cx="44" cy="46" r="11" fill="#1a56db"/>
+        <path d="M18 88 Q18 68 44 68 Q70 68 70 88" fill="#1a56db" opacity=".7"/>
+        <text x="44" y="104" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="#6b7280">직원</text>
+
+        <!-- 로그인 1회 표시 -->
+        <rect x="14" y="116" width="60" height="22" rx="4" fill="#1a56db"/>
+        <text x="44" y="131" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#fff">1회 로그인</text>
+
+        <!-- 화살표 → SSO 허브 -->
+        <line x1="74" y1="127" x2="108" y2="120" stroke="#1a56db" stroke-width="2"/>
+        <polygon points="104,115 112,120 104,125" fill="#1a56db"/>
+
+        <!-- SSO 허브 (중앙) -->
+        <circle cx="140" cy="120" r="28" fill="#1a56db"/>
+        <text x="140" y="116" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="#fff">SSO</text>
+        <text x="140" y="130" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#bfdbfe">토큰 발급</text>
+
+        <!-- 시스템들 (오른쪽) -->
+        <rect x="200" y="28" width="66" height="26" rx="5" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="233" y="45" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#16a34a">HR 시스템</text>
+
+        <rect x="200" y="68" width="66" height="26" rx="5" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="233" y="85" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#16a34a">사내 포털</text>
+
+        <rect x="200" y="108" width="66" height="26" rx="5" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="233" y="125" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#16a34a">결재 시스템</text>
+
+        <rect x="200" y="148" width="66" height="26" rx="5" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="233" y="165" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#16a34a">코드 저장소</text>
+
+        <rect x="200" y="188" width="66" height="26" rx="5" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="233" y="205" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#16a34a">메일 시스템</text>
+
+        <!-- SSO → 시스템 연결선 -->
+        <line x1="166" y1="104" x2="198" y2="44" stroke="#16a34a" stroke-width="1.5" opacity=".6"/>
+        <line x1="168" y1="110" x2="198" y2="82" stroke="#16a34a" stroke-width="1.5" opacity=".6"/>
+        <line x1="168" y1="120" x2="198" y2="121" stroke="#16a34a" stroke-width="1.5" opacity=".6"/>
+        <line x1="166" y1="132" x2="198" y2="158" stroke="#16a34a" stroke-width="1.5" opacity=".6"/>
+        <line x1="162" y1="142" x2="198" y2="198" stroke="#16a34a" stroke-width="1.5" opacity=".6"/>
+
+        <!-- 체크 배지 -->
+        <circle cx="140" cy="120" r="28" fill="none" stroke="#bfdbfe" stroke-width="1" opacity=".4"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 7. IdP -->
+<section class="slide" data-i="6">
+  <div class="img-layout">
+    <div class="text-side">
+      <div class="label">06 · ARCHITECTURE</div>
+      <h2>IdP <span class="blue">(Identity Provider)</span></h2>
+      <ul class="bullets">
+        <li>신원을 확인하고 <strong>토큰</strong>을 발급하는 서버</li>
+        <li>비유: 호텔 프런트(IdP)가 카드키(토큰) 발급 → 레스토랑/수영장(앱)은 카드키만 확인. 비밀번호는 프런트만 앎</li>
+        <li>외부 IdP: Google, Kakao — 이미 쓰고 있는 개념</li>
+        <li>기업 자체 IdP 필요 이유: <strong>폐쇄망, 사내 AD 연동, 외부 의존 제거</strong></li>
+      </ul>
+      <p class="next">→ <span>그러면 IdP와 앱은 어떤 언어로 대화하는가?</span></p>
+    </div>
+    <div class="img-side">
+      <svg viewBox="0 0 260 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:min(52vh,380px)">
+        <!-- 3개 참여자 가로 배치 -->
+        <!-- 사용자 -->
+        <circle cx="36" cy="30" r="16" fill="#eff6ff" stroke="#1a56db" stroke-width="2"/>
+        <circle cx="36" cy="30" r="9" fill="#1a56db"/>
+        <path d="M16 58 Q16 46 36 46 Q56 46 56 58" fill="#1a56db" opacity=".7"/>
+        <text x="36" y="72" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#6b7280">사용자</text>
+
+        <!-- IdP -->
+        <rect x="96" y="14" width="68" height="44" rx="7" fill="#1a56db"/>
+        <text x="130" y="34" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" font-weight="700" fill="#fff">IdP</text>
+        <text x="130" y="50" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#bfdbfe">신원확인·토큰발급</text>
+
+        <!-- 앱들 (오른쪽 세로) -->
+        <rect x="196" y="8" width="58" height="22" rx="4" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="225" y="23" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#16a34a">HR 시스템</text>
+        <rect x="196" y="38" width="58" height="22" rx="4" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="225" y="53" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#16a34a">사내 포털</text>
+        <rect x="196" y="68" width="58" height="22" rx="4" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="225" y="83" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#16a34a">결재 시스템</text>
+
+        <!-- 사용자 → IdP -->
+        <line x1="56" y1="36" x2="94" y2="36" stroke="#1a56db" stroke-width="1.5"/>
+        <polygon points="90,31 96,36 90,41" fill="#1a56db"/>
+        <text x="75" y="30" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#1a56db">① 로그인</text>
+
+        <!-- IdP → 앱들 -->
+        <line x1="164" y1="28" x2="194" y2="20" stroke="#16a34a" stroke-width="1.5"/>
+        <polygon points="190,16 196,21 190,25" fill="#16a34a"/>
+        <line x1="164" y1="36" x2="194" y2="49" stroke="#16a34a" stroke-width="1.5"/>
+        <polygon points="190,45 196,50 190,55" fill="#16a34a"/>
+        <line x1="164" y1="44" x2="194" y2="76" stroke="#16a34a" stroke-width="1.5"/>
+        <polygon points="190,72 196,77 190,82" fill="#16a34a"/>
+
+        <!-- 구분선 -->
+        <line x1="14" y1="102" x2="246" y2="102" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="3,3"/>
+
+        <!-- 핵심 흐름 설명 (하단) -->
+        <!-- 단계 1 -->
+        <rect x="14" y="112" width="68" height="52" rx="5" fill="#eff6ff" stroke="#1a56db" stroke-width="1.5"/>
+        <text x="48" y="130" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#1a56db">① 로그인</text>
+        <text x="48" y="144" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#374151">사용자가</text>
+        <text x="48" y="156" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#374151">IdP에 인증</text>
+
+        <line x1="84" y1="138" x2="96" y2="138" stroke="#374151" stroke-width="1.5"/>
+        <polygon points="92,133 98,138 92,143" fill="#374151"/>
+
+        <!-- 단계 2 -->
+        <rect x="98" y="112" width="68" height="52" rx="5" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+        <text x="132" y="130" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#d97706">② 토큰</text>
+        <text x="132" y="144" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#374151">IdP가 JWT</text>
+        <text x="132" y="156" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#374151">토큰 발급</text>
+
+        <line x1="168" y1="138" x2="180" y2="138" stroke="#374151" stroke-width="1.5"/>
+        <polygon points="176,133 182,138 176,143" fill="#374151"/>
+
+        <!-- 단계 3 -->
+        <rect x="182" y="112" width="68" height="52" rx="5" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="216" y="130" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#16a34a">③ 접근</text>
+        <text x="216" y="144" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#374151">앱은 토큰만</text>
+        <text x="216" y="156" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#374151">검증·PW 모름</text>
+
+        <!-- 핵심 메시지 -->
+        <rect x="14" y="174" width="236" height="28" rx="5" fill="#1a56db" opacity=".08" stroke="#1a56db" stroke-width="1"/>
+        <text x="132" y="186" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" font-weight="600" fill="#1a56db">비밀번호는 IdP만 알고</text>
+        <text x="132" y="198" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#1a56db">앱은 토큰(카드키)만 확인</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 8. OAuth2 -->
+<section class="slide" data-i="7">
+  <div class="img-layout">
+    <div class="text-side">
+      <div class="label">07 · PROTOCOL</div>
+      <h2>OAuth2 — <span class="blue">위임 인증</span></h2>
+      <ul class="bullets">
+        <li>앱이 사용자 비밀번호를 직접 받지 않고 인증을 IdP에 위임하는 표준</li>
+        <li>비밀번호는 IdP만 알고, 앱은 <strong>토큰</strong>만 받음</li>
+        <li>토큰 = 카드키. 만료 시간 있음 (보통 5분)</li>
+        <li>신규 앱 개발의 사실상 표준</li>
+      </ul>
+      <p class="next">→ <span>그런데 OAuth2만으로는 "이 사람이 누구인지"를 모른다</span></p>
+    </div>
+    <div class="img-side">
+      <svg viewBox="0 0 320 248" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:min(52vh,380px)">
+
+        <!-- ===== 왼쪽 패널: 기존 방식 ===== -->
+        <rect x="6" y="6" width="146" height="164" rx="7" fill="#fff1f2" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="79" y="24" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" font-weight="700" fill="#dc2626">기존 방식</text>
+        <text x="79" y="38" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#dc2626">공격 표면 3개</text>
+
+        <!-- 앱1 -->
+        <rect x="14" y="48" width="44" height="24" rx="4" fill="#fff" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="36" y="64" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#374151">앱 1</text>
+        <!-- 화살표 앱1→DB1 -->
+        <line x1="58" y1="60" x2="70" y2="60" stroke="#dc2626" stroke-width="1.5"/>
+        <polygon points="67,56 74,60 67,64" fill="#dc2626"/>
+        <!-- DB1 -->
+        <rect x="74" y="48" width="70" height="24" rx="4" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="109" y="60" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#dc2626">PW DB</text>
+        <text x="109" y="70" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="7" fill="#dc2626">⚠ 해킹 위험</text>
+
+        <!-- 앱2 -->
+        <rect x="14" y="86" width="44" height="24" rx="4" fill="#fff" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="36" y="102" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#374151">앱 2</text>
+        <line x1="58" y1="98" x2="70" y2="98" stroke="#dc2626" stroke-width="1.5"/>
+        <polygon points="67,94 74,98 67,102" fill="#dc2626"/>
+        <rect x="74" y="86" width="70" height="24" rx="4" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="109" y="98" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#dc2626">PW DB</text>
+        <text x="109" y="108" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="7" fill="#dc2626">⚠ 해킹 위험</text>
+
+        <!-- 앱3 -->
+        <rect x="14" y="124" width="44" height="24" rx="4" fill="#fff" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="36" y="140" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#374151">앱 3</text>
+        <line x1="58" y1="136" x2="70" y2="136" stroke="#dc2626" stroke-width="1.5"/>
+        <polygon points="67,132 74,136 67,140" fill="#dc2626"/>
+        <rect x="74" y="124" width="70" height="24" rx="4" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="109" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#dc2626">PW DB</text>
+        <text x="109" y="146" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="7" fill="#dc2626">⚠ 해킹 위험</text>
+
+        <text x="79" y="162" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="7" font-weight="600" fill="#dc2626">앱 하나 털리면 전체 노출</text>
+
+        <!-- ===== 오른쪽 패널: OAuth2 방식 ===== -->
+        <rect x="162" y="6" width="152" height="164" rx="7" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="238" y="24" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" font-weight="700" fill="#16a34a">OAuth2 방식</text>
+        <text x="238" y="38" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#16a34a">공격 표면 1개</text>
+
+        <!-- 앱들 (PW 없음) -->
+        <rect x="170" y="52" width="52" height="22" rx="4" fill="#fff" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="196" y="67" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#374151">앱 1</text>
+
+        <rect x="170" y="88" width="52" height="22" rx="4" fill="#fff" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="196" y="103" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#374151">앱 2</text>
+
+        <rect x="170" y="124" width="52" height="22" rx="4" fill="#fff" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="196" y="139" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#374151">앱 3</text>
+
+        <!-- Keycloak (PW 보관) -->
+        <rect x="248" y="52" width="58" height="94" rx="6" fill="#1a56db"/>
+        <text x="277" y="88" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#fff">Key-</text>
+        <text x="277" y="102" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#fff">cloak</text>
+        <text x="277" y="118" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="7" fill="#bfdbfe">PW만 보관</text>
+        <text x="277" y="130" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="7" fill="#bfdbfe">집중 방어</text>
+
+        <!-- 토큰 화살표: Keycloak → 앱들 (왼쪽 방향) -->
+        <line x1="246" y1="63" x2="224" y2="63" stroke="#d97706" stroke-width="1.5"/>
+        <polygon points="228,59 222,63 228,67" fill="#d97706"/>
+
+        <line x1="246" y1="99" x2="224" y2="99" stroke="#d97706" stroke-width="1.5"/>
+        <polygon points="228,95 222,99 228,103" fill="#d97706"/>
+
+        <line x1="246" y1="135" x2="224" y2="135" stroke="#d97706" stroke-width="1.5"/>
+        <polygon points="228,131 222,135 228,139" fill="#d97706"/>
+
+        <text x="238" y="158" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="7" fill="#d97706">← 토큰만 전달 (5분 만료)</text>
+        <text x="238" y="168" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="7" fill="#16a34a">앱 DB에 PW 없음</text>
+
+        <!-- ===== 하단 비교 ===== -->
+        <line x1="6" y1="180" x2="314" y2="180" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="3,3"/>
+
+        <rect x="6" y="186" width="146" height="56" rx="5" fill="#fee2e2" stroke="#dc2626" stroke-width="1"/>
+        <text x="79" y="202" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" font-weight="700" fill="#dc2626">앱 3개 DB 모두 위험</text>
+        <text x="79" y="216" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="7" fill="#374151">앱1 털리면 → 전체 PW 노출</text>
+        <text x="79" y="230" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="7" fill="#374151">보안 수준이 가장 약한 앱이 위협</text>
+
+        <rect x="162" y="186" width="152" height="56" rx="5" fill="#f0fdf4" stroke="#16a34a" stroke-width="1"/>
+        <text x="238" y="202" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" font-weight="700" fill="#16a34a">Keycloak만 집중 방어</text>
+        <text x="238" y="216" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="7" fill="#374151">앱 털려도 토큰뿐 → 5분 후 만료</text>
+        <text x="238" y="230" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="7" fill="#374151">비밀번호는 Keycloak에만 존재</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 9. OIDC -->
+<section class="slide" data-i="8">
+  <div class="img-layout">
+    <div class="text-side">
+      <div class="label">08 · PROTOCOL</div>
+      <h2>OIDC <span class="blue">(OpenID Connect)</span></h2>
+      <ul class="bullets">
+        <li>OAuth2 위에 신원 정보를 추가한 확장 표준</li>
+        <li>OAuth2: "이 사람 접근 허용" (권한)</li>
+        <li>OIDC: "이 사람은 김철수, 팀장" (신원 + 권한)</li>
+        <li>JWT 토큰에 사용자 정보 포함 — 앱이 별도 조회 불필요</li>
+        <li><strong>실무에서 Keycloak 연동 = 거의 항상 OIDC</strong></li>
+      </ul>
+    </div>
+    <div class="img-side">
+      <svg viewBox="0 0 260 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:min(52vh,380px)">
+        <!-- OAuth2 레이어 (하단) -->
+        <rect x="14" y="140" width="232" height="56" rx="7" fill="#eff6ff" stroke="#1a56db" stroke-width="2"/>
+        <text x="130" y="160" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="#1a56db">OAuth2</text>
+        <text x="130" y="176" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#374151">Access Token만 발급</text>
+        <text x="130" y="190" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#6b7280">scope: read, write  →  권한만 있음</text>
+
+        <!-- OIDC 레이어 (상단, OAuth2 위에 쌓임) -->
+        <rect x="14" y="14" width="232" height="116" rx="7" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+        <text x="130" y="34" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="#16a34a">OIDC  =  OAuth2  +  ID Token</text>
+
+        <!-- ID Token 내용 박스 -->
+        <rect x="26" y="42" width="208" height="78" rx="5" fill="#fff" stroke="#16a34a" stroke-width="1"/>
+        <text x="42" y="60" font-family="JetBrains Mono,monospace" font-size="9" fill="#6b7280">// ID Token (JWT)</text>
+        <text x="42" y="76" font-family="JetBrains Mono,monospace" font-size="9" fill="#374151">sub:   "user-001"</text>
+        <text x="42" y="90" font-family="JetBrains Mono,monospace" font-size="9" fill="#374151">name:  "김철수"</text>
+        <text x="42" y="104" font-family="JetBrains Mono,monospace" font-size="9" fill="#374151">roles: ["팀장","HR_ACCESS"]</text>
+        <text x="42" y="116" font-family="JetBrains Mono,monospace" font-size="9" fill="#374151">exp:   1748000000</text>
+
+        <!-- 확장 화살표 -->
+        <line x1="130" y1="138" x2="130" y2="130" stroke="#16a34a" stroke-width="2"/>
+        <polygon points="124,132 130,126 136,132" fill="#16a34a"/>
+        <text x="148" y="128" font-family="Space Grotesk,sans-serif" font-size="8" fill="#16a34a">확장</text>
+
+        <!-- 하단 비교 -->
+        <line x1="14" y1="206" x2="246" y2="206" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="3,3"/>
+        <rect x="14" y="212" width="108" height="22" rx="4" fill="#eff6ff"/>
+        <text x="68" y="227" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#1a56db">OAuth2: 권한만 — "접근 허용"</text>
+        <rect x="132" y="212" width="114" height="22" rx="4" fill="#f0fdf4"/>
+        <text x="189" y="227" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#16a34a">OIDC: 신원+권한 — "김철수, 팀장"</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 10. SAML -->
+<section class="slide" data-i="9">
+  <div class="img-layout">
+    <div class="text-side">
+      <div class="label">09 · PROTOCOL</div>
+      <h2>SAML 2.0 — <span class="blue">레거시 기업 표준</span></h2>
+      <ul class="bullets">
+        <li>XML 기반, 2005년부터 기업 표준</li>
+        <li>아직도 많이 씀: SAP, Oracle, 정부 시스템, 오래된 그룹웨어</li>
+        <li>OIDC vs SAML: 신규 개발은 OIDC, 레거시 연동은 SAML</li>
+        <li><strong>Keycloak은 OIDC와 SAML 2.0을 동시에 지원</strong></li>
+      </ul>
+    </div>
+    <div class="img-side">
+      <svg viewBox="0 0 260 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:min(52vh,380px)">
+        <!-- 상단: OIDC vs SAML 비교 -->
+        <rect x="14" y="10" width="108" height="90" rx="7" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+        <text x="68" y="30" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="#16a34a">OIDC</text>
+        <text x="68" y="46" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#374151">JSON / JWT</text>
+        <text x="68" y="60" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#374151">REST 친화적</text>
+        <text x="68" y="74" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#374151">모바일 · SPA</text>
+        <rect x="24" y="82" width="88" height="12" rx="3" fill="#16a34a" opacity=".15"/>
+        <text x="68" y="92" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" font-weight="700" fill="#16a34a">신규 개발 권장</text>
+
+        <rect x="138" y="10" width="108" height="90" rx="7" fill="#fff7ed" stroke="#d97706" stroke-width="2"/>
+        <text x="192" y="30" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="#d97706">SAML 2.0</text>
+        <text x="192" y="46" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#374151">XML 기반</text>
+        <text x="192" y="60" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#374151">브라우저 리다이렉트</text>
+        <text x="192" y="74" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#374151">SAP · Oracle · 그룹웨어</text>
+        <rect x="148" y="82" width="88" height="12" rx="3" fill="#d97706" opacity=".15"/>
+        <text x="192" y="92" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" font-weight="700" fill="#d97706">레거시 연동 필수</text>
+
+        <!-- 구분선 -->
+        <line x1="14" y1="112" x2="246" y2="112" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="3,3"/>
+
+        <!-- Keycloak 동시 지원 박스 -->
+        <rect x="80" y="120" width="100" height="36" rx="8" fill="#1a56db"/>
+        <text x="130" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="#fff">Keycloak</text>
+        <text x="130" y="150" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#bfdbfe">OIDC + SAML 동시 지원</text>
+
+        <!-- Keycloak → OIDC 화살표 -->
+        <line x1="96" y1="120" x2="68" y2="102" stroke="#16a34a" stroke-width="1.5"/>
+        <polygon points="64,106 70,100 74,108" fill="#16a34a"/>
+
+        <!-- Keycloak → SAML 화살표 -->
+        <line x1="164" y1="120" x2="192" y2="102" stroke="#d97706" stroke-width="1.5"/>
+        <polygon points="188,106 194,100 198,108" fill="#d97706"/>
+
+        <!-- 하단: 레거시 시스템 목록 -->
+        <text x="130" y="172" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="#6b7280">SAML이 필요한 실제 시스템</text>
+
+        <rect x="14" y="178" width="52" height="22" rx="4" fill="#fff7ed" stroke="#d97706" stroke-width="1"/>
+        <text x="40" y="193" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#d97706">SAP</text>
+
+        <rect x="72" y="178" width="52" height="22" rx="4" fill="#fff7ed" stroke="#d97706" stroke-width="1"/>
+        <text x="98" y="193" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#d97706">Oracle</text>
+
+        <rect x="130" y="178" width="52" height="22" rx="4" fill="#fff7ed" stroke="#d97706" stroke-width="1"/>
+        <text x="156" y="193" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#d97706">그룹웨어</text>
+
+        <rect x="188" y="178" width="58" height="22" rx="4" fill="#fff7ed" stroke="#d97706" stroke-width="1"/>
+        <text x="217" y="193" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#d97706">정부시스템</text>
+
+        <!-- 핵심 메시지 -->
+        <rect x="14" y="210" width="232" height="22" rx="5" fill="#1a56db" opacity=".08" stroke="#1a56db" stroke-width="1"/>
+        <text x="130" y="225" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" font-weight="600" fill="#1a56db">Keycloak 하나로 신규 + 레거시 동시 대응</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 11. KEYCLOAK -->
+<section class="slide" data-i="10">
+  <div class="img-layout">
+    <div class="text-side">
+      <div class="label">10 · SOLUTION</div>
+      <h2><span class="blue">Keycloak</span></h2>
+      <p style="font-size:var(--body);color:var(--gray);margin-bottom:clamp(.8rem,2vh,1.5rem)">Red Hat이 만든 오픈소스 엔터프라이즈 IdP</p>
+      <ul class="bullets">
+        <li>SSO · LDAP/AD · 소셜 로그인 · MFA 올인원</li>
+        <li>OIDC + SAML 2.0 동시 지원</li>
+        <li>폐쇄망 완전 운영 — 인터넷 불필요</li>
+        <li>로그인 화면 완전 커스텀 (화이트라벨)</li>
+      </ul>
+    </div>
+    <div class="img-side">
+      <svg viewBox="0 0 260 250" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:min(52vh,380px)">
+        <!-- 중앙 Keycloak -->
+        <circle cx="130" cy="125" r="34" fill="#1a56db"/>
+        <text x="130" y="120" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="#fff">Key-</text>
+        <text x="130" y="134" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="#fff">cloak</text>
+        <!-- 연결선 6개 -->
+        <line x1="130" y1="91" x2="130" y2="52" stroke="#e5e7eb" stroke-width="1.5"/>
+        <line x1="159" y1="100" x2="196" y2="72" stroke="#e5e7eb" stroke-width="1.5"/>
+        <line x1="162" y1="133" x2="200" y2="155" stroke="#e5e7eb" stroke-width="1.5"/>
+        <line x1="130" y1="159" x2="130" y2="198" stroke="#e5e7eb" stroke-width="1.5"/>
+        <line x1="101" y1="133" x2="60" y2="155" stroke="#e5e7eb" stroke-width="1.5"/>
+        <line x1="101" y1="100" x2="64" y2="72" stroke="#e5e7eb" stroke-width="1.5"/>
+        <!-- SSO (상단) -->
+        <rect x="96" y="18" width="68" height="30" rx="6" fill="#eff6ff" stroke="#1a56db" stroke-width="1.5"/>
+        <text x="130" y="31" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700" fill="#1a56db">SSO</text>
+        <text x="130" y="43" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#6b7280">OIDC + SAML</text>
+        <!-- LDAP/AD (우상) -->
+        <rect x="198" y="46" width="58" height="30" rx="6" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="227" y="59" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#16a34a">LDAP/AD</text>
+        <text x="227" y="71" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#6b7280">사내 계정 연동</text>
+        <!-- 소셜 로그인 (우하) -->
+        <rect x="202" y="142" width="56" height="30" rx="6" fill="#fdf4ff" stroke="#9333ea" stroke-width="1.5"/>
+        <text x="230" y="155" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#9333ea">소셜 로그인</text>
+        <text x="230" y="167" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#6b7280">Google·Kakao</text>
+        <!-- MFA (하단) -->
+        <rect x="96" y="202" width="68" height="30" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+        <text x="130" y="215" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700" fill="#d97706">MFA</text>
+        <text x="130" y="227" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#6b7280">OTP · 지문 · 보안키</text>
+        <!-- 화이트라벨 (좌하) -->
+        <rect x="4" y="142" width="56" height="30" rx="6" fill="#fff1f2" stroke="#e11d48" stroke-width="1.5"/>
+        <text x="32" y="155" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" font-weight="700" fill="#e11d48">화이트라벨</text>
+        <text x="32" y="167" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#6b7280">로그인 커스텀</text>
+        <!-- 폐쇄망 (좌상) -->
+        <rect x="6" y="46" width="56" height="30" rx="6" fill="#f8fafc" stroke="#475569" stroke-width="1.5"/>
+        <text x="34" y="59" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#475569">폐쇄망</text>
+        <text x="34" y="71" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#6b7280">인터넷 불필요</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 12. KEYCLOAK STRUCTURE -->
+<section class="slide" data-i="11">
+  <div class="img-layout">
+    <div class="text-side">
+      <div class="label">11 · ARCHITECTURE</div>
+      <h2>Keycloak <span class="blue">논리 구조</span></h2>
+      <div class="hier">
+        <div class="hier-row"><span class="hier-tag ht-realm">Realm</span><span class="hier-desc">격리된 인증 도메인 — 회사 전체 (예: ezl)</span></div>
+        <div class="hier-row"><div class="hier-indent"></div><span class="hier-tag ht-client">Client</span><span class="hier-desc">보호 대상 앱 — HR, 포털, 결재</span></div>
+        <div class="hier-row"><div class="hier-indent"></div><span class="hier-tag ht-role">Role</span><span class="hier-desc">권한 단위 — ROLE_HR_ACCESS</span></div>
+        <div class="hier-row"><div class="hier-indent"></div><span class="hier-tag ht-group">Group</span><span class="hier-desc">사용자 묶음 — 개발팀, 인사팀</span></div>
+        <div class="hier-row"><div class="hier-indent"></div><span class="hier-tag ht-user">User</span><span class="hier-desc">실제 사람 — 그룹 소속 → Role 자동 상속</span></div>
+      </div>
+    </div>
+    <div class="img-side">
+      <svg viewBox="0 0 240 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:min(52vh,380px)">
+        <!-- Realm -->
+        <rect x="10" y="8" width="220" height="244" rx="10" fill="#eff6ff" stroke="#1a56db" stroke-width="2"/>
+        <text x="120" y="28" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="#1a56db">Realm: ezl</text>
+
+        <!-- Client 행 -->
+        <rect x="24" y="38" width="192" height="28" rx="5" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="120" y="50" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#16a34a">Client</text>
+        <text x="120" y="61" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#374151">HR시스템 · 사내포털 · 결재시스템</text>
+
+        <!-- 연결선 -->
+        <line x1="120" y1="66" x2="120" y2="76" stroke="#e5e7eb" stroke-width="1.5"/>
+
+        <!-- Role 행 -->
+        <rect x="24" y="76" width="192" height="28" rx="5" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+        <text x="120" y="88" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#d97706">Role</text>
+        <text x="120" y="99" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#374151">ROLE_HR_ACCESS · ROLE_APPROVAL</text>
+
+        <!-- 연결선 -->
+        <line x1="120" y1="104" x2="120" y2="114" stroke="#e5e7eb" stroke-width="1.5"/>
+
+        <!-- Group 행 -->
+        <rect x="24" y="114" width="192" height="28" rx="5" fill="#fdf4ff" stroke="#9333ea" stroke-width="1.5"/>
+        <text x="120" y="126" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#9333ea">Group</text>
+        <text x="120" y="137" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#374151">개발팀 · 인사팀 · 경영팀</text>
+
+        <!-- 연결선 -->
+        <line x1="120" y1="142" x2="120" y2="152" stroke="#e5e7eb" stroke-width="1.5"/>
+
+        <!-- User 행 -->
+        <rect x="24" y="152" width="192" height="28" rx="5" fill="#fff1f2" stroke="#e11d48" stroke-width="1.5"/>
+        <text x="120" y="164" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#e11d48">User</text>
+        <text x="120" y="175" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#374151">김철수 · 이영희 · 박민준</text>
+
+        <!-- 자동 상속 설명 -->
+        <line x1="120" y1="180" x2="120" y2="192" stroke="#9333ea" stroke-width="1.5" stroke-dasharray="3,2"/>
+        <rect x="50" y="192" width="140" height="22" rx="4" fill="#fdf4ff" stroke="#9333ea" stroke-width="1"/>
+        <text x="120" y="207" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" font-weight="600" fill="#9333ea">그룹 소속 → Role 자동 상속</text>
+
+        <!-- 핵심 메시지 -->
+        <rect x="24" y="222" width="192" height="22" rx="4" fill="#1a56db" opacity=".08" stroke="#1a56db" stroke-width="1"/>
+        <text x="120" y="237" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" font-weight="600" fill="#1a56db">인사이동 = 그룹 변경 한 번 → 권한 자동 반영</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 13. SCENARIOS -->
+<section class="slide" data-i="12">
+  <div class="img-layout">
+    <div class="text-side">
+      <div class="label">12 · USE CASES</div>
+      <h2>실전 도입 <span class="blue">시나리오</span></h2>
+      <div class="scenario-grid">
+        <div class="sc"><p class="req">사내 포털 SSO 연결해주세요</p><p class="sol">OIDC Client 등록 + RBAC</p></div>
+        <div class="sc"><p class="req">AD 계정으로 로그인되게 해주세요</p><p class="sol">LDAP User Federation</p></div>
+        <div class="sc"><p class="req">레거시 그룹웨어가 SAML만 지원합니다</p><p class="sol">Keycloak SAML IdP 설정</p></div>
+        <div class="sc"><p class="req">서비스끼리 API 인증이 필요합니다</p><p class="sol">Client Credentials Flow</p></div>
+      </div>
+    </div>
+    <div class="img-side">
+      <svg viewBox="0 0 240 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:min(52vh,380px)">
+        <!-- 중앙 Keycloak -->
+        <circle cx="120" cy="130" r="30" fill="#1a56db"/>
+        <text x="120" y="125" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700" fill="#fff">Key-</text>
+        <text x="120" y="138" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700" fill="#fff">cloak</text>
+
+        <!-- 시나리오 1: SSO (좌상) -->
+        <rect x="8" y="14" width="80" height="44" rx="6" fill="#eff6ff" stroke="#1a56db" stroke-width="1.5"/>
+        <text x="48" y="30" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" font-weight="700" fill="#1a56db">① SSO</text>
+        <text x="48" y="42" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="7.5" fill="#374151">사내 포털 연결</text>
+        <text x="48" y="53" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#6b7280">OIDC Client</text>
+        <line x1="88" y1="36" x2="96" y2="108" stroke="#1a56db" stroke-width="1.5" opacity=".5"/>
+
+        <!-- 시나리오 2: LDAP (우상) -->
+        <rect x="152" y="14" width="80" height="44" rx="6" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="192" y="30" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" font-weight="700" fill="#16a34a">② LDAP/AD</text>
+        <text x="192" y="42" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="7.5" fill="#374151">AD 계정 연동</text>
+        <text x="192" y="53" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#6b7280">User Federation</text>
+        <line x1="152" y1="36" x2="144" y2="108" stroke="#16a34a" stroke-width="1.5" opacity=".5"/>
+
+        <!-- 시나리오 3: SAML (좌하) -->
+        <rect x="8" y="202" width="80" height="44" rx="6" fill="#fff7ed" stroke="#d97706" stroke-width="1.5"/>
+        <text x="48" y="218" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" font-weight="700" fill="#d97706">③ SAML</text>
+        <text x="48" y="230" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="7.5" fill="#374151">레거시 그룹웨어</text>
+        <text x="48" y="241" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#6b7280">SAML IdP 설정</text>
+        <line x1="88" y1="224" x2="96" y2="155" stroke="#d97706" stroke-width="1.5" opacity=".5"/>
+
+        <!-- 시나리오 4: API (우하) -->
+        <rect x="152" y="202" width="80" height="44" rx="6" fill="#fdf4ff" stroke="#9333ea" stroke-width="1.5"/>
+        <text x="192" y="218" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" font-weight="700" fill="#9333ea">④ API 인증</text>
+        <text x="192" y="230" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="7.5" fill="#374151">서비스간 인증</text>
+        <text x="192" y="241" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#6b7280">Client Credentials</text>
+        <line x1="152" y1="224" x2="144" y2="155" stroke="#9333ea" stroke-width="1.5" opacity=".5"/>
+
+        <!-- 핵심 메시지 -->
+        <rect x="20" y="100" width="200" height="60" rx="6" fill="#fff" stroke="#e5e7eb" stroke-width="1" opacity=".0"/>
+        <text x="120" y="172" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8" fill="#6b7280">모든 요청, Keycloak 하나로 해결</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 14. CLOSING -->
+<section class="slide" data-i="13">
+  <div class="label">13 · CLOSING</div>
+  <h2>전사 도입, <span class="blue">지금 시작할 수 있습니다</span></h2>
+  <div class="flow">
+    <span class="fi">계정 지옥</span><span class="fa">→</span>
+    <span class="fi">IAM / SSO</span><span class="fa">→</span>
+    <span class="fi">IdP</span><span class="fa">→</span>
+    <span class="fi">프로토콜</span><span class="fa">→</span>
+    <span class="fi hi">Keycloak</span><span class="fa">→</span>
+    <span class="fi">실전 적용</span>
+  </div>
+  <div class="outcomes">
+    <div class="oc"><div class="oc-dot" style="background:var(--blue)"></div>보안 강화</div>
+    <div class="oc"><div class="oc-dot" style="background:#16a34a"></div>운영 효율</div>
+    <div class="oc"><div class="oc-dot" style="background:#9333ea"></div>개발 생산성</div>
+  </div>
+  <div class="callout" style="margin-top:clamp(1.5rem,3vh,3rem);font-size:var(--h3)">
+    감사합니다 &nbsp;·&nbsp; <span class="blue">Q &amp; A</span>
+  </div>
+</section>
+
+</div>
+
+<div class="progress" id="prog"></div>
+<div class="counter"><span class="cur" id="cur">1</span> / <span id="tot">14</span></div>
+<div class="hint">← → · scroll · swipe</div>
+
+<script>
+(function(){
+  const slides=Array.from(document.querySelectorAll('.slide'));
+  const prog=document.getElementById('prog');
+  const curEl=document.getElementById('cur');
+  const tot=slides.length;
+  document.getElementById('tot').textContent=tot;
+  let cur=0;
+  function go(n){
+    if(n<0||n>=tot)return;
+    slides[cur].classList.remove('active');
+    cur=n;
+    slides[cur].classList.add('active');
+    prog.style.width=((cur+1)/tot*100)+'%';
+    curEl.textContent=cur+1;
+  }
+  document.addEventListener('keydown',e=>{
+    if(['ArrowRight','ArrowDown',' '].includes(e.key)){e.preventDefault();go(cur+1);}
+    if(['ArrowLeft','ArrowUp'].includes(e.key)){e.preventDefault();go(cur-1);}
+  });
+  let wl=false;
+  document.addEventListener('wheel',e=>{
+    if(wl)return;wl=true;
+    e.deltaY>0?go(cur+1):go(cur-1);
+    setTimeout(()=>wl=false,700);
+  },{passive:true});
+  let ty=0;
+  document.addEventListener('touchstart',e=>{ty=e.touches[0].clientY;},{passive:true});
+  document.addEventListener('touchend',e=>{
+    const d=ty-e.changedTouches[0].clientY;
+    if(Math.abs(d)>40)d>0?go(cur+1):go(cur-1);
+  },{passive:true});
+  prog.style.width=(1/tot*100)+'%';
+})();
+</script>
+</body>
+</html>

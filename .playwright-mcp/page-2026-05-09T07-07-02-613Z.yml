@@ -1,0 +1,202 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]: TECH SHARING · CSG · 2026
+      - heading "Keycloak 과 IAM" [level=1] [ref=e5]:
+        - text: Keycloak
+        - text: 과 IAM
+      - paragraph [ref=e6]: 하나의 로그인으로 모든 시스템을 연결하는 방법
+      - generic [ref=e7]: 발표자 배승도 · Cloud Engineer
+    - generic:
+      - generic: 01 · PROBLEM
+      - heading "우리가 겪는 문제" [level=2]
+      - list:
+        - listitem:
+          - text: — 직원 200명 × 사내 시스템 8개 =
+          - strong: 계정 1,600개
+        - listitem: — 퇴사자 처리 누락 → 6개월 후에도 HR 시스템 접근 가능
+        - listitem: — 직원은 비밀번호 8개를 외워야 함 → 생산성 저하, 보안 사고
+        - listitem: — IT 헬프데스크 문의의 40%가 비밀번호 재설정
+      - generic: 이걸 한 번에 해결하는 방법이 있습니다
+    - generic:
+      - generic: 02 · CONCEPT
+      - heading "IAM (Identity and Access Management)" [level=2]
+      - list:
+        - listitem:
+          - text: —
+          - strong: "\"누가, 무엇에, 어떻게 접근할 수 있는지 관리하는 체계\""
+        - listitem: "— Identity: 당신이 누구인지 → 인증 (Authentication)"
+        - listitem: "— Access: 무엇을 할 수 있는지 → 인가 (Authorization)"
+        - listitem: — AWS IAM을 이미 쓰고 있다면 — 그게 IAM이다
+      - paragraph: → 인증과 인가, 어떻게 다른가?
+    - generic:
+      - generic: 03 · CONCEPT
+      - heading "인증 vs 인가" [level=2]
+      - generic:
+        - generic:
+          - heading "인증 (Authentication)" [level=3]
+          - paragraph: "\"당신이 누구인지 확인\""
+          - list:
+            - listitem: · 로그인
+            - listitem: · 비밀번호, 지문, OTP
+            - listitem: · 신분증 확인
+        - generic:
+          - heading "인가 (Authorization)" [level=3]
+          - paragraph: "\"무엇을 할 수 있는지 확인\""
+          - list:
+            - listitem: · 권한 체크
+            - listitem: · 팀장만 결재 가능
+            - listitem: · 개발팀만 코드 저장소 접근
+    - generic:
+      - generic: 04 · CONCEPT
+      - heading "RBAC (Role-Based Access Control)" [level=2]
+      - list:
+        - listitem:
+          - text: —
+          - strong: "나쁜 방식:"
+          - text: 사람에게 직접 권한 부여 → 300명이면 300번 설정
+        - listitem:
+          - text: —
+          - strong: "좋은 방식:"
+          - text: 역할(Role)에 권한 → 역할을 사람에게 할당
+        - listitem: "— 예시: ROLE_HR_ACCESS → 개발팀 그룹 → 김철수 자동 상속"
+        - listitem: — 인사이동 시 그룹만 바꾸면 권한 자동 변경
+      - paragraph: → 이걸 여러 시스템에 한 번에 적용하려면?
+    - generic:
+      - generic: 05 · CONCEPT
+      - heading "SSO (Single Sign-On)" [level=2]
+      - list:
+        - listitem:
+          - text: —
+          - strong: 한 번 로그인 → 모든 시스템 접근
+        - listitem: "— 퇴사 처리: 계정 1개 비활성화 → 전체 시스템 즉시 차단"
+        - listitem: — 직원 생산성 향상, IT 운영 비용 절감
+        - listitem: — 비밀번호는 한 곳에서만 관리
+      - paragraph: → 그러면 이 SSO를 누가 처리해주는가?
+    - generic:
+      - generic: 06 · ARCHITECTURE
+      - heading "IdP (Identity Provider)" [level=2]
+      - list:
+        - listitem:
+          - text: — 신원을 확인하고
+          - strong: 토큰
+          - text: 을 발급하는 서버
+        - listitem: "— 비유: 호텔 프런트(IdP)가 카드키(토큰) 발급 → 레스토랑/수영장(앱)은 카드키만 확인. 비밀번호는 프런트만 앎"
+        - listitem: "— 외부 IdP: Google, Kakao — 이미 쓰고 있는 개념"
+        - listitem:
+          - text: "— 기업 자체 IdP 필요 이유:"
+          - strong: 폐쇄망, 사내 AD 연동, 외부 의존 제거
+      - paragraph: → 그러면 IdP와 앱은 어떤 언어로 대화하는가?
+    - generic:
+      - generic: 07 · PROTOCOL
+      - heading "OAuth2 — 위임 인증" [level=2]
+      - list:
+        - listitem: — 앱이 사용자 비밀번호를 직접 받지 않고 인증을 IdP에 위임하는 표준
+        - listitem:
+          - text: — 비밀번호는 IdP만 알고, 앱은
+          - strong: 토큰
+          - text: 만 받음
+        - listitem: — 토큰 = 카드키. 만료 시간 있음 (보통 5분)
+        - listitem: — 신규 앱 개발의 사실상 표준
+      - paragraph: → 그런데 OAuth2만으로는 "이 사람이 누구인지"를 모른다
+    - generic:
+      - generic: 08 · PROTOCOL
+      - heading "OIDC (OpenID Connect)" [level=2]
+      - list:
+        - listitem: — OAuth2 위에 신원 정보를 추가한 확장 표준
+        - listitem: "— OAuth2: \"이 사람 접근 허용\" (권한)"
+        - listitem: "— OIDC: \"이 사람은 김철수, 팀장\" (신원 + 권한)"
+        - listitem: — JWT 토큰에 사용자 정보 포함 — 앱이 별도 조회 불필요
+        - listitem:
+          - text: —
+          - strong: 실무에서 Keycloak 연동 = 거의 항상 OIDC
+    - generic:
+      - generic: 09 · PROTOCOL
+      - heading "SAML 2.0 — 레거시 기업 표준" [level=2]
+      - list:
+        - listitem: — XML 기반, 2005년부터 기업 표준
+        - listitem: "— 아직도 많이 씀: SAP, Oracle, 정부 시스템, 오래된 그룹웨어"
+        - listitem: "— OIDC vs SAML: 신규 개발은 OIDC, 레거시 연동은 SAML"
+        - listitem:
+          - text: —
+          - strong: Keycloak은 OIDC와 SAML 2.0을 동시에 지원
+    - generic:
+      - generic: 10 · SOLUTION
+      - heading "Keycloak" [level=2]
+      - paragraph: Red Hat이 만든 오픈소스 엔터프라이즈 IdP
+      - generic:
+        - generic:
+          - heading "SSO" [level=3]
+          - paragraph: OIDC + SAML 동시 지원
+        - generic:
+          - heading "LDAP / AD" [level=3]
+          - paragraph: 기존 사내 계정 그대로 연동
+        - generic:
+          - heading "소셜 로그인" [level=3]
+          - paragraph: Google, Kakao 등
+        - generic:
+          - heading "MFA" [level=3]
+          - paragraph: OTP, 지문, 보안키
+        - generic:
+          - heading "화이트라벨" [level=3]
+          - paragraph: 로그인 화면 완전 커스텀
+        - generic:
+          - heading "폐쇄망" [level=3]
+          - paragraph: 인터넷 없이 완전 운영 가능
+    - generic:
+      - generic: 11 · ARCHITECTURE
+      - heading "Keycloak 논리 구조" [level=2]
+      - generic:
+        - generic:
+          - generic: Realm
+          - generic: "격리된 인증 도메인 — 회사 전체 (예: ezl)"
+        - generic:
+          - generic: Client
+          - generic: 보호 대상 앱 — HR 시스템, 사내 포털, 결재 시스템
+        - generic:
+          - generic: Role
+          - generic: 권한 단위 — ROLE_HR_ACCESS, ROLE_APPROVAL_ACCESS
+        - generic:
+          - generic: Group
+          - generic: 사용자 묶음 — 개발팀, 인사팀, 경영팀
+        - generic:
+          - generic: User
+          - generic: 실제 사람 — 김철수 (그룹 소속 → Role 자동 상속)
+    - generic:
+      - generic: 12 · USE CASES
+      - heading "실전 도입 시나리오" [level=2]
+      - generic:
+        - generic:
+          - paragraph: "\"사내 포털 SSO 연결해주세요\""
+          - paragraph: → OIDC Client 등록 + RBAC
+        - generic:
+          - paragraph: "\"AD 계정으로 로그인되게 해주세요\""
+          - paragraph: → LDAP User Federation
+        - generic:
+          - paragraph: "\"레거시 그룹웨어가 SAML만 지원합니다\""
+          - paragraph: → Keycloak SAML IdP 설정
+        - generic:
+          - paragraph: "\"서비스끼리 API 인증이 필요합니다\""
+          - paragraph: → Client Credentials Flow
+    - generic:
+      - generic: 13 · CLOSING
+      - heading "전사 도입, 지금 시작할 수 있습니다" [level=2]
+      - generic:
+        - generic: 계정 지옥
+        - generic: →
+        - generic: IAM / SSO
+        - generic: →
+        - generic: IdP
+        - generic: →
+        - generic: 프로토콜
+        - generic: →
+        - generic: Keycloak
+        - generic: →
+        - generic: 실전 적용
+      - generic:
+        - generic: 보안 강화
+        - generic: 운영 효율
+        - generic: 개발 생산성
+      - generic: 감사합니다 · Q & A
+  - generic [ref=e9]: 1 / 14
+  - generic [ref=e10]: ← → · scroll · swipe
