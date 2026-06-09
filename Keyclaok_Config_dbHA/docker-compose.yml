@@ -1,0 +1,56 @@
+# =============================================================================
+# Node1 (Primary DB + Keycloak)  ── 평상시 MASTER
+# -----------------------------------------------------------------------------
+# - postgres: 공식 postgres:18. 최초 1회 init-primary.sh 가 복제계정 + pg_hba 설정.
+#   공식 이미지는 listen_addresses='*' 가 기본이라 standby가 바로 붙을 수 있다.
+# - keycloak: DB는 VIP(보조 사설IP)로 접속한다. 절대 EIP/자기 IP 직접 지정 금지.
+# =============================================================================
+services:
+  postgres:
+    image: postgres:18
+    container_name: keycloak-db
+    network_mode: host
+
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+      PGDATA: /var/lib/postgresql/data
+      # ── 복제 설정 (init-primary.sh 가 사용) ──
+      REPL_USER: replicator
+      REPL_PASSWORD: replicator_pw
+      REPL_ALLOWED_CIDR: 10.10.0.0/24      # standby가 속한 서브넷 (public, AZ 2a)
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # 최초 1회만 실행되는 초기화 스크립트 (복제계정 + pg_hba)
+      - ./init-primary.sh:/docker-entrypoint-initdb.d/10-init-primary.sh:ro
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.6.1
+    container_name: keycloak
+    network_mode: host
+
+    entrypoint: ["/bin/bash", "-c", "/opt/keycloak/bin/kc.sh build && /opt/keycloak/bin/kc.sh start"]
+
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: saltware1234
+      JAVA_OPTS_APPEND: >-
+        -Xms3g -Xmx3g
+
+    volumes:
+      - ./keycloak.conf:/opt/keycloak/conf/keycloak.conf
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

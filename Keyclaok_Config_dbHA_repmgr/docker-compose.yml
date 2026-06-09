@@ -1,0 +1,66 @@
+# =============================================================================
+# Node1 (PostgreSQL repmgr Primary + Keycloak)  ── 평상시 MASTER
+# -----------------------------------------------------------------------------
+#   이 구성은 "만약 bitnami/postgresql-repmgr 이미지가 살아있었다면" 을 가정한
+#    레퍼런스다. 2025-08-28 Broadcom 정책으로 해당 무료 이미지는 내려갔다.
+#    실제로 돌리려면 README.md 의 '이미지 현황' 절을 먼저 읽을 것.
+# =============================================================================
+services:
+  postgres:
+    image: bitnamilegacy/postgresql-repmgr:17.6.0
+
+    container_name: keycloak-db
+    network_mode: host
+
+    environment:
+      # ── PostgreSQL 기본 (POSTGRES_* 아님, POSTGRESQL_* 접두사 주의) ──
+      POSTGRESQL_USERNAME: keycloak
+      POSTGRESQL_PASSWORD: keycloak
+      POSTGRESQL_DATABASE: keycloak
+      POSTGRESQL_POSTGRES_PASSWORD: postgres_admin_pw   # superxuser(postgres) 암호
+      POSTGRESQL_PORT_NUMBER: "5432"
+
+      # ── repmgr 클러스터 설정 ──
+      REPMGR_PASSWORD: repmgr_pw
+      REPMGR_PRIMARY_HOST: 10.10.0.21          # 클러스터 최초 Primary (Node1 자신)
+      REPMGR_PRIMARY_PORT: "5432"
+      REPMGR_PARTNER_NODES: 10.10.0.21,10.10.0.22   # 전체 노드 목록 (실제 노드IP)
+      REPMGR_NODE_NAME: pg-node-1              # ★ 반드시 '-숫자'로 끝나야 함 (끝 숫자가 NODE_ID로 자동변환)
+      REPMGR_NODE_ID: "1"                      # 명시적으로도 지정(안전)
+      REPMGR_NODE_NETWORK_NAME: 10.10.0.21     # 이 노드 실제 사설IP
+      REPMGR_PORT_NUMBER: "5432"
+      # 자기 자신이 PRIMARY_HOST 와 같으면 → Primary 로 부팅
+      #  (Node2는 다르므로 자동으로 Standby가 되어 pg_basebackup 수행)
+
+    volumes:
+      # 수동 버전과 데이터 경로가 다름: /bitnami/postgresql
+      - postgres_data:/bitnami/postgresql
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.6.1
+    container_name: keycloak
+    network_mode: host
+
+    entrypoint: ["/bin/bash", "-c", "/opt/keycloak/bin/kc.sh build && /opt/keycloak/bin/kc.sh start"]
+
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: saltware1234
+      JAVA_OPTS_APPEND: >-
+        -Xms3g -Xmx3g
+
+    volumes:
+      - ./keycloak.conf:/opt/keycloak/conf/keycloak.conf
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

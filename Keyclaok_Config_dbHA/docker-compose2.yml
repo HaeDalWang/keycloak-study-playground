@@ -1,0 +1,64 @@
+# =============================================================================
+# Node2 (Standby DB + Keycloak)  ── 평상시 BACKUP
+# -----------------------------------------------------------------------------
+# - postgres: 공식 postgres:18 이지만 entrypoint를 standby-entrypoint.sh 로 교체.
+#   최초 기동 시 Primary(PRIMARY_HOST)를 pg_basebackup 으로 복사해 standby로 뜬다.
+# - keycloak: Node1과 동일하게 DB는 VIP로 접속.
+#   * 평상시 standby DB는 읽기전용이라 Keycloak이 붙으면 쓰기 실패한다.
+#     → 평상시 Node2의 keycloak 컨테이너는 '내려둔' 상태로 두는 것을 권장.
+#       (failover 후 VIP가 넘어와 standby가 승격되면 그때 기동)
+#     → 아래 keycloak 서비스는 `profiles`로 묶어 기본 기동에서 제외했다.
+#       failover 시:  docker compose --profile on-failover up -d keycloak
+# =============================================================================
+services:
+  postgres:
+    image: postgres:18
+    container_name: keycloak-db
+    network_mode: host
+
+    # 공식 entrypoint(initdb) 대신 standby 부트스트랩 스크립트로 교체
+    entrypoint: ["/usr/local/bin/standby-entrypoint.sh"]
+
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+      PGDATA: /var/lib/postgresql/data
+      # ── Primary 접속 정보 (pg_basebackup 대상) ──
+      PRIMARY_HOST: 10.10.0.21        # Node1 실제 사설IP (public, AZ 2a)
+      PRIMARY_PORT: "5432"
+      REPL_USER: replicator
+      REPL_PASSWORD: replicator_pw
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./standby-entrypoint.sh:/usr/local/bin/standby-entrypoint.sh:ro
+
+    healthcheck:
+      # standby는 읽기전용이지만 pg_isready 자체는 OK 반환
+      test: ["CMD-SHELL", "pg_isready -U keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.6.1
+    container_name: keycloak
+    network_mode: host
+    # 평상시 기동 제외. failover 시에만:
+    #   docker compose --profile on-failover up -d keycloak
+    profiles: ["on-failover"]
+
+    entrypoint: ["/bin/bash", "-c", "/opt/keycloak/bin/kc.sh build && /opt/keycloak/bin/kc.sh start"]
+
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: saltware1234
+      JAVA_OPTS_APPEND: >-
+        -Xms3g -Xmx3g
+
+    volumes:
+      - ./keycloak.conf:/opt/keycloak/conf/keycloak.conf
+
+volumes:
+  postgres_data:

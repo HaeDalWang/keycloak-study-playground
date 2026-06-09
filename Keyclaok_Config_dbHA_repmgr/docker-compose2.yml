@@ -1,0 +1,62 @@
+# =============================================================================
+# Node2 (PostgreSQL repmgr Standby + Keycloak)  ── 평상시 BACKUP
+# -----------------------------------------------------------------------------
+# 수동 스트리밍 복제 버전의 docker-compose2.yml 과 비교해 보라:
+#   - entrypoint 교체 없음 (standby-entrypoint.sh 불필요)
+#   - REPMGR_NODE_NAME / NETWORK_NAME 만 Node1과 다름
+#   - 부팅 시 자기 IP != REPMGR_PRIMARY_HOST 이므로 자동으로 Standby가 되어
+#     pg_basebackup → 복제 시작 → repmgr 에 standby 등록까지 자동.
+# =============================================================================
+services:
+  postgres:
+    image: bitnamilegacy/postgresql-repmgr:17.6.0
+
+    container_name: keycloak-db
+    network_mode: host
+
+    environment:
+      POSTGRESQL_USERNAME: keycloak
+      POSTGRESQL_PASSWORD: keycloak
+      POSTGRESQL_DATABASE: keycloak
+      POSTGRESQL_POSTGRES_PASSWORD: postgres_admin_pw
+      POSTGRESQL_PORT_NUMBER: "5432"
+
+      REPMGR_PASSWORD: repmgr_pw
+      REPMGR_PRIMARY_HOST: 10.10.0.21          # Node1을 가리킴 (동일)
+      REPMGR_PRIMARY_PORT: "5432"
+      REPMGR_PARTNER_NODES: 10.10.0.21,10.10.0.22
+      REPMGR_NODE_NAME: pg-node-2              # ★ '-숫자'로 끝나야 함. Node1과 다른 숫자
+      REPMGR_NODE_ID: "2"                      # 명시적으로도 지정(안전)
+      REPMGR_NODE_NETWORK_NAME: 10.10.0.22     # ★ 이 노드(Node2) 사설IP
+      REPMGR_PORT_NUMBER: "5432"
+
+    volumes:
+      - postgres_data:/bitnami/postgresql
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.6.1
+    container_name: keycloak
+    network_mode: host
+    # 수동 버전과 동일: 평상시 standby는 읽기전용이라 keycloak은 내려둠.
+    # failover 후에만:  docker compose -f docker-compose2.yml --profile on-failover up -d keycloak
+    profiles: ["on-failover"]
+
+    entrypoint: ["/bin/bash", "-c", "/opt/keycloak/bin/kc.sh build && /opt/keycloak/bin/kc.sh start"]
+
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: saltware1234
+      JAVA_OPTS_APPEND: >-
+        -Xms3g -Xmx3g
+
+    volumes:
+      - ./keycloak.conf:/opt/keycloak/conf/keycloak.conf
+
+volumes:
+  postgres_data:

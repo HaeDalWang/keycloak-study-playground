@@ -96,7 +96,7 @@ resource "aws_security_group" "keycloak" {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = [var.vpc_cidr]
+    cidr_blocks = ["0.0.0.0/0"]   # 인터넷 직접 오픈 (테스트용, ALB 없는 구성)
   }
 
   ingress {
@@ -104,6 +104,22 @@ resource "aws_security_group" "keycloak" {
     from_port   = 7800
     to_port     = 7800
     protocol    = "tcp"
+    self        = true
+  }
+
+  ingress {
+    description = "PostgreSQL replication & VIP access"
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    self        = true
+  }
+
+  ingress {
+    description = "VRRP unicast (Keepalived)"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "112"
     self        = true
   }
 
